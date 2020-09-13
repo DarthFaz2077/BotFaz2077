@@ -6,7 +6,7 @@ use serenity::{
 
 #[command]
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.channel_id.say(&ctx.http, "Pong!").await?;
+    msg.channel_id.say(ctx, "Pong!").await?;
 
     Ok(())
 }
