@@ -13,7 +13,7 @@ use serenity::{
     prelude::*,
 };
 
-use commands::{general::*, owners::*};
+use commands::{fun::*, general::*, owners::*};
 
 struct ShardManagerContainer;
 
@@ -33,6 +33,10 @@ impl EventHandler for Handler {
         info!("Resumed!");
     }
 }
+
+#[group]
+#[commands(poke)]
+struct Fun;
 
 #[group]
 #[commands(ping)]
@@ -65,6 +69,7 @@ async fn main() {
 
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).prefix(&prefix))
+        .group(&FUN_GROUP)
         .group(&GENERAL_GROUP)
         .group(&OWNERS_GROUP);
 
