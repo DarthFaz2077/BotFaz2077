@@ -13,7 +13,7 @@ use serenity::{
     prelude::*,
 };
 
-use commands::{fun::*, general::*, owners::*};
+use commands::{fun::*, general::*, owner::*};
 
 struct ShardManagerContainer;
 
@@ -44,7 +44,7 @@ struct General;
 
 #[group]
 #[commands(shutdown)]
-struct Owners;
+struct Owner;
 
 #[tokio::main]
 async fn main() {
@@ -71,7 +71,7 @@ async fn main() {
         .configure(|c| c.owners(owners).prefix(&prefix))
         .group(&FUN_GROUP)
         .group(&GENERAL_GROUP)
-        .group(&OWNERS_GROUP);
+        .group(&OWNER_GROUP);
 
     let mut client = Client::new(&token)
         .framework(framework)
