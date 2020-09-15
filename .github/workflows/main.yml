@@ -2,28 +2,57 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+    branches: [master]
 
 jobs:
-  linux_arm7:
-    name: Linux ARMv7
+  compile:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        target:
+          - armv7-unknown-linux-gnueabihf
+
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Cache Deps
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Cache toolchain
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.rustup/toolchains/${{ matrix.target }}
+            ~/.rustup/update-hashes/${{ matrix.target }}
+            ~/.rustup/settings.toml
+          key: toolchain-${{ matrix.target }}
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: armv7-unknown-linux-gnueabihf
+          target: ${{ matrix.target }}
           override: true
-      - uses: actions-rs/cargo@v1
+
+      - name: Cross-compile
+        uses: actions-rs/cargo@v1
         with:
           use-cross: true
           command: build
-          args: --target armv7-unknown-linux-gnueabihf --release --verbose
-      - uses: actions/upload-artifact@v2
+          args: --release --target=${{ matrix.target }}
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
         with:
-          name: botfaz2077-arm
-          path: target/armv7-unknown-linux-gnueabihf/release/botfaz2077
+          name: botfaz2077-${{ matrix.target }}
+          path: target/${{ matrix.target }}/release/botfaz2077
