@@ -14,3 +14,7 @@ log = "0.4"
 tokio = { version = "0.2", features = ["macros"]}
 reqwest = { version = "0.10", features = ["json"] }
 serde = "1.0.116"
+
+[target.'cfg(linux)'.dependencies.openssl]
+version = "0.10"
+features = ["vendored"]
