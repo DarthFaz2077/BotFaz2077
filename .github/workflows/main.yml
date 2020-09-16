@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  compile:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -51,8 +51,34 @@ jobs:
           command: build
           args: --release --target=${{ matrix.target }}
 
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
+      - name: Delete old binary
+        uses: appleboy/ssh-action@master
         with:
-          name: botfaz2077-${{ matrix.target }}
-          path: target/${{ matrix.target }}/release/botfaz2077
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: rm -rf ~/BotFaz2077/botfaz2077
+
+      - name: Upload new binary
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH2 }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: target/${{ matrix.target }}/release/botfaz2077
+          target: ~/BotFaz2077
+          strip_components: 3
+
+      - name: Restart bot
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: sudo systemctl restart botfaz2077.service
