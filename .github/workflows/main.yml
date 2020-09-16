@@ -67,7 +67,7 @@ jobs:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH2 }}
+          key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           source: target/${{ matrix.target }}/release/botfaz2077
           target: ~/BotFaz2077
