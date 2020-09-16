@@ -7,9 +7,12 @@ use log::{error, info};
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
-    framework::{standard::macros::group, StandardFramework},
+    framework::standard::{
+        help_commands, macros::group, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
+        StandardFramework,
+    },
     http::Http,
-    model::{event::ResumedEvent, gateway::Ready},
+    model::prelude::*,
     prelude::*,
 };
 
@@ -35,7 +38,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(poke)]
+#[commands(poke, feed, pat)]
 struct Fun;
 
 #[group]
@@ -45,6 +48,19 @@ struct General;
 #[group]
 #[commands(shutdown)]
 struct Owner;
+
+#[help]
+async fn my_help(
+    context: &Context,
+    msg: &Message,
+    args: Args,
+    help_options: &'static HelpOptions,
+    groups: &[&'static CommandGroup],
+    owners: HashSet<UserId>,
+) -> CommandResult {
+    let _ = help_commands::with_embeds(context, msg, args, help_options, groups, owners).await;
+    Ok(())
+}
 
 #[tokio::main]
 async fn main() {
@@ -71,7 +87,8 @@ async fn main() {
         .configure(|c| c.owners(owners).prefix(&prefix))
         .group(&FUN_GROUP)
         .group(&GENERAL_GROUP)
-        .group(&OWNER_GROUP);
+        .group(&OWNER_GROUP)
+        .help(&MY_HELP);
 
     let mut client = Client::new(&token)
         .framework(framework)
