@@ -75,6 +75,7 @@ async fn my_help(
 }
 
 #[tokio::main]
+#[instrument]
 async fn main() {
     kankyo::load().expect("Failed to load .env file!");
 
