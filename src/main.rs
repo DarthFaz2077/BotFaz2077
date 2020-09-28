@@ -2,14 +2,14 @@ mod commands;
 
 use std::{collections::HashSet, env, sync::Arc};
 
-use log::{error, info};
+use tracing::{error, info, instrument};
 
 use serenity::{
     async_trait,
     client::bridge::gateway::ShardManager,
     framework::standard::{
-        help_commands, macros::group, macros::help, Args, CommandGroup, CommandResult, HelpOptions,
-        StandardFramework,
+        help_commands, macros::group, macros::help, macros::hook, Args, CommandGroup,
+        CommandResult, HelpOptions, StandardFramework,
     },
     http::Http,
     model::prelude::*,
@@ -32,9 +32,21 @@ impl EventHandler for Handler {
         info!("Connected as {}!", ready.user.name);
     }
 
+    #[instrument(skip(self))]
     async fn resume(&self, _: Context, _: ResumedEvent) {
         info!("Resumed!");
     }
+}
+
+#[hook]
+#[instrument]
+async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
+    info!(
+        "Got command '{}' by user '{}'.",
+        command_name, msg.author.name
+    );
+
+    true
 }
 
 #[group]
@@ -66,7 +78,7 @@ async fn my_help(
 async fn main() {
     kankyo::load().expect("Failed to load .env file!");
 
-    env_logger::init();
+    tracing_subscriber::fmt::init();
 
     let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment!");
     let prefix = env::var("PREFIX").expect("Expected a prefix in the environment!");
@@ -88,7 +100,8 @@ async fn main() {
         .group(&FUN_GROUP)
         .group(&GENERAL_GROUP)
         .group(&OWNER_GROUP)
-        .help(&MY_HELP);
+        .help(&MY_HELP)
+        .before(before);
 
     let mut client = Client::new(&token)
         .framework(framework)
