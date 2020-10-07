@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -9,11 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        target:
-          - armv7-unknown-linux-gnueabihf
 
     steps:
       - name: Checkout sources
@@ -32,24 +27,22 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ~/.rustup/toolchains/${{ matrix.target }}
-            ~/.rustup/update-hashes/${{ matrix.target }}
+            ~/.rustup/toolchains
+            ~/.rustup/update-hashes
             ~/.rustup/settings.toml
-          key: toolchain-${{ matrix.target }}
+          key: toolchain-${{ hashFiles('rust-toolchain') }}
 
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: ${{ matrix.target }}
           override: true
 
-      - name: Cross-compile
+      - name: Compile
         uses: actions-rs/cargo@v1
         with:
-          use-cross: true
           command: build
-          args: --release --target=${{ matrix.target }}
+          args: --release
 
       - name: Delete old binary
         uses: appleboy/ssh-action@master
