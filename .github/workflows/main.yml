@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  CICD:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,7 +30,7 @@ jobs:
             ~/.rustup/toolchains
             ~/.rustup/update-hashes
             ~/.rustup/settings.toml
-          key: toolchain-${{ hashFiles('rust-toolchain') }}
+          key: toolchain
 
       - name: Install toolchain
         uses: actions-rs/toolchain@v1
