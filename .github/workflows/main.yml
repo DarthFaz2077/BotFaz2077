@@ -62,9 +62,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: target/${{ matrix.target }}/release/botfaz2077
+          source: target/release/botfaz2077
           target: ~/BotFaz2077
-          strip_components: 3
+          strip_components: 2
 
       - name: Restart bot
         uses: appleboy/ssh-action@master
