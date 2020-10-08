@@ -46,8 +46,8 @@ jobs:
           command: build
           args: --release
 
-        - name: Upload artifact
-          uses: actions/upload-artifact@v2.2.0
-          with:
-            name: botfaz2077
-            path: target/release/botfaz2077
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2.2.0
+        with:
+          name: botfaz2077
+          path: target/release/botfaz2077
