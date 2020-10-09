@@ -1,0 +1,43 @@
+name: Check Pull Request
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  runs-on: ubuntu-latest
+
+  steps:
+    - name: Checkout sources
+      uses: actions/checkout@v2.3.3
+
+    - name: Cache Deps
+      uses: actions/cache@v2.1.1
+      with:
+        path: |
+          ~/.cargo/registry
+          ~/.cargo/git
+          target
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Cache toolchain
+      uses: actions/cache@v2.1.1
+      with:
+        path: |
+          ~/.rustup/toolchains
+          ~/.rustup/update-hashes
+          ~/.rustup/settings.toml
+        key: toolchain
+
+    - name: Install toolchain
+      uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: stable
+        override: true
+
+    - name: Compile
+      uses: actions-rs/cargo@v1.0.3
+      with:
+        command: build
+        args: --release
