@@ -22,10 +22,22 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2.9.0
         with:
-          workflow: ci.yml
+          workflow: push.yml
           branch: master
           name: botfaz2077
           path: ~/Botfaz2077
+
+      - name: Upload new binary
+        uses: appleboy/scp-action@v0.1.1
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: ~/BotFaz2077/botfaz2077
+          target: ~/BotFaz2077
+          strip_components: 2
 
       - name: Restart bot
         uses: appleboy/ssh-action@v0.1.3
