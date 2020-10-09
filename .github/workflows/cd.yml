@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Delete old binary
-        uses: appleboy/ssh-action@0.1.3
+        uses: appleboy/ssh-action@v0.1.3
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
@@ -28,7 +28,7 @@ jobs:
           path: ~/Botfaz2077
 
       - name: Restart bot
-        uses: appleboy/ssh-action@0.1.3
+        uses: appleboy/ssh-action@v0.1.3
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
