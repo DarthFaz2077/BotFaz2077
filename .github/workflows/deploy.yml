@@ -25,7 +25,7 @@ jobs:
           workflow: push.yml
           branch: master
           name: botfaz2077
-          path: Botfaz2077
+          path: BotFaz2077
 
       - name: Upload new binary
         uses: appleboy/scp-action@v0.1.1
