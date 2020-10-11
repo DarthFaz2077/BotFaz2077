@@ -43,8 +43,11 @@ jobs:
           command: build
           args: --release
 
+      - name: Tar binary
+        run: tar -cvf botfaz2077.tar target/release/botfaz2077
+
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.0
         with:
-          name: botfaz2077
-          path: target/release/botfaz2077
+          name: botfaz2077.tar
+          path: botfaz2077.tar

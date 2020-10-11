@@ -24,8 +24,10 @@ jobs:
         with:
           workflow: push.yml
           branch: master
-          name: botfaz2077
-          path: BotFaz2077
+          name: botfaz2077.tar
+
+      - name: Untar binary
+        run: tar -xvf botfaz2077.tar
 
       - name: Upload new binary
         uses: appleboy/scp-action@v0.1.1
@@ -35,9 +37,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: BotFaz2077/botfaz2077
+          source: botfaz2077
           target: BotFaz2077
-          strip_components: 1
 
       - name: Restart bot
         uses: appleboy/ssh-action@v0.1.3
