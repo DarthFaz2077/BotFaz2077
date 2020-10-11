@@ -27,7 +27,7 @@ jobs:
           name: botfaz2077.tar
 
       - name: Untar binary
-        run: tar -xvf botfaz2077.tar
+        run: tar -xvf botfaz2077.tar --strip-components=2
 
       - name: Upload new binary
         uses: appleboy/scp-action@v0.1.1
