@@ -6,7 +6,9 @@ on:
       - master
 
 jobs:
-  Pull Request:
+  pull_request:
+    name: Pull Request
+
     runs-on: ubuntu-latest
 
     steps:

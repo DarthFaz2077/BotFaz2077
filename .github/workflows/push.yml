@@ -6,7 +6,9 @@ on:
       - master
 
 jobs:
-  Push:
+  push:
+    name: Push
+
     runs-on: ubuntu-latest
 
     steps:

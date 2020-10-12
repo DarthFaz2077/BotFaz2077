@@ -5,7 +5,9 @@ on:
     - cron: "0 3 * * *"
 
 jobs:
-  Deploy:
+  deploy:
+    name: Deploy
+
     runs-on: ubuntu-latest
 
     steps:
