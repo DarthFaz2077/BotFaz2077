@@ -1,4 +1,4 @@
-name: Compile and Upload Push
+name: Compile and Upload new Version
 
 on:
   push:
@@ -45,11 +45,34 @@ jobs:
           command: build
           args: --release
 
-      - name: Tar binary
-        run: tar -cvf botfaz2077.tar target/release/botfaz2077
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2.2.0
+      - name: Delete old binary
+        uses: appleboy/ssh-action@v0.1.3
         with:
-          name: botfaz2077.tar
-          path: botfaz2077.tar
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: rm -rf ~/BotFaz2077/botfaz2077
+
+      - name: Upload new binary
+        uses: appleboy/scp-action@v0.1.1
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          source: target/release/botfaz2077
+          target: ~/BotFaz2077
+          strip_components: 2
+
+      - name: Restart bot
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: sudo systemctl restart botfaz2077.service
