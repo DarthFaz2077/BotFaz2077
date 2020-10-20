@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Upload Release Asset
+    name: Release
 
     runs-on: ubuntu-latest
 
