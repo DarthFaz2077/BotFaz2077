@@ -1,10 +1,9 @@
 ---
-name: Feature request
+name: Feature Request
 about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: enhancement
+assignees: ""
 ---
 
 **Is your feature request related to a problem? Please describe.**
@@ -13,8 +12,12 @@ A clear and concise description of what the problem is. Ex. I'm always frustrate
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**Describe the basic flow/steps of using this feature**
+How this feature would be used:
+
+1. Set something '...'
+2. Run some command '...'
+3. Other steps or related info '...'
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
