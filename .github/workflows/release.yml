@@ -3,7 +3,7 @@ name: Upload Release Binaries
 on:
   release:
     types:
-      - created
+      - published
 
 jobs:
   release:
