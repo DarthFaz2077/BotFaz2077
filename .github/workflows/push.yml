@@ -46,7 +46,7 @@ jobs:
           args: --release
 
       - name: Delete old binary
-        uses: appleboy/ssh-action@v0.1.3
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
@@ -68,7 +68,7 @@ jobs:
           strip_components: 2
 
       - name: Restart bot
-        uses: appleboy/ssh-action@v0.1.3
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
