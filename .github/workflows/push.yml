@@ -34,7 +34,7 @@ jobs:
           key: toolchain
 
       - name: Install toolchain
-        uses: actions-rs/toolchain@v1.0.6
+        uses: actions-rs/toolchain@v1.0.7
         with:
           toolchain: stable
           override: true
