@@ -14,4 +14,4 @@ reqwest = { version = "0.10.8", features = ["json"] }
 serde = "1.0.123"
 tracing = "0.1.23"
 tracing-subscriber = "0.2.15"
-tracing-futures = "0.2.4"
+tracing-futures = "0.2.5"
