@@ -1,5 +1,7 @@
 mod commands;
 
+use dotenv::dotenv;
+
 use std::{collections::HashSet, env, sync::Arc};
 
 use tracing::{error, info, instrument};
@@ -77,7 +79,7 @@ async fn my_help(
 #[tokio::main]
 #[instrument]
 async fn main() {
-    kankyo::load().expect("Failed to load .env file!");
+    dotenv().ok();
 
     tracing_subscriber::fmt::init();
 
@@ -104,7 +106,7 @@ async fn main() {
         .help(&MY_HELP)
         .before(before);
 
-    let mut client = Client::new(&token)
+    let mut client = Client::builder(&token)
         .framework(framework)
         .event_handler(Handler)
         .await
