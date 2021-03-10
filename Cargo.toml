@@ -13,5 +13,5 @@ tokio = { version = "0.2.22", features = ["macros"]}
 reqwest = { version = "0.10.8", features = ["json"] }
 serde = "1.0.124"
 tracing = "0.1.25"
-tracing-subscriber = "0.2.15"
+tracing-subscriber = "0.2.16"
 tracing-futures = "0.2.5"
