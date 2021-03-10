@@ -3,7 +3,7 @@ name: Compile and Upload new Version
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   push:
