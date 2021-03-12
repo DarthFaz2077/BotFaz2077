@@ -2,7 +2,7 @@ mod commands;
 
 use dotenv::dotenv;
 
-use std::{collections::HashSet, env, sync::Arc};
+use std::{collections::HashSet, env, sync::Arc, time::SystemTime};
 
 use tracing::{debug, error, info, instrument};
 
@@ -24,6 +24,12 @@ struct ShardManagerContainer;
 
 impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
+}
+
+struct StartTime;
+
+impl TypeMapKey for StartTime {
+    type Value = SystemTime;
 }
 
 struct Handler;
@@ -60,7 +66,7 @@ struct Fun;
 struct General;
 
 #[group]
-#[commands(shutdown)]
+#[commands(shutdown, uptime)]
 struct Owner;
 
 #[help]
@@ -111,6 +117,11 @@ async fn main() {
         .event_handler(Handler)
         .await
         .expect("Error creating client!");
+
+    {
+        let mut data = client.data.write().await;
+        data.insert::<StartTime>(SystemTime::now());
+    }
 
     {
         let mut data = client.data.write().await;

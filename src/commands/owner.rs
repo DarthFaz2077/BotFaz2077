@@ -1,4 +1,4 @@
-use crate::ShardManagerContainer;
+use crate::{ShardManagerContainer, StartTime};
 use serenity::{
     framework::standard::{macros::command, CommandResult},
     model::prelude::*,
@@ -20,6 +20,25 @@ async fn shutdown(ctx: &Context, msg: &Message) -> CommandResult {
 
         return Ok(());
     }
+
+    Ok(())
+}
+
+#[command]
+#[owners_only]
+async fn uptime(ctx: &Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.read().await;
+
+    let start_time = data.get::<StartTime>().unwrap();
+    msg.channel_id
+        .say(
+            ctx,
+            format!(
+                "Uptime: {} seconds!",
+                start_time.elapsed().unwrap().as_secs()
+            ),
+        )
+        .await?;
 
     Ok(())
 }
