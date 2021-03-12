@@ -1,8 +1,10 @@
 mod commands;
 
+use dotenv::dotenv;
+
 use std::{collections::HashSet, env, sync::Arc};
 
-use tracing::{error, info, instrument};
+use tracing::{debug, error, info, instrument};
 
 use serenity::{
     async_trait,
@@ -32,9 +34,9 @@ impl EventHandler for Handler {
         info!("Connected as {}!", ready.user.name);
     }
 
-    #[instrument(skip(self))]
-    async fn resume(&self, _: Context, _: ResumedEvent) {
-        info!("Resumed!");
+    #[instrument(skip(self, _ctx))]
+    async fn resume(&self, _ctx: Context, resume: ResumedEvent) {
+        debug!("Resumed; trace:{:?}", resume.trace)
     }
 }
 
@@ -77,7 +79,7 @@ async fn my_help(
 #[tokio::main]
 #[instrument]
 async fn main() {
-    kankyo::load().expect("Failed to load .env file!");
+    dotenv().ok();
 
     tracing_subscriber::fmt::init();
 
@@ -104,7 +106,7 @@ async fn main() {
         .help(&MY_HELP)
         .before(before);
 
-    let mut client = Client::new(&token)
+    let mut client = Client::builder(&token)
         .framework(framework)
         .event_handler(Handler)
         .await
