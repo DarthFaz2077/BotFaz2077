@@ -4,7 +4,7 @@ use dotenv::dotenv;
 
 use std::{collections::HashSet, env, sync::Arc};
 
-use tracing::{error, info, instrument};
+use tracing::{debug, error, info, instrument};
 
 use serenity::{
     async_trait,
@@ -34,9 +34,9 @@ impl EventHandler for Handler {
         info!("Connected as {}!", ready.user.name);
     }
 
-    #[instrument(skip(self))]
-    async fn resume(&self, _: Context, _: ResumedEvent) {
-        info!("Resumed!");
+    #[instrument(skip(self, _ctx))]
+    async fn resume(&self, _ctx: Context, resume: ResumedEvent) {
+        debug!("Resumed; trace:{:?}", resume.trace)
     }
 }
 

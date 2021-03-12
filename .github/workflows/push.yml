@@ -1,4 +1,4 @@
-name: Compile and Upload new Version
+name: Build and push new version to DockerHub
 
 on:
   push:
@@ -12,67 +12,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v2.3.4
-
-      - name: Cache Deps
-        uses: actions/cache@v2.1.4
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1.1.1
+        
+      - name: Login to DockerHub
+        uses: docker/login-action@v1.8.0
         with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Cache toolchain
-        uses: actions/cache@v2.1.4
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2.3.0
         with:
-          path: |
-            ~/.rustup/toolchains
-            ~/.rustup/update-hashes
-            ~/.rustup/settings.toml
-          key: toolchain
+          push: true
+          tags: darthfaz2077/botfaz2077:latest
 
-      - name: Install toolchain
-        uses: actions-rs/toolchain@v1.0.7
-        with:
-          toolchain: stable
-          override: true
-
-      - name: Compile
-        uses: actions-rs/cargo@v1.0.3
-        with:
-          command: build
-          args: --release
-
-      - name: Delete old binary
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          script: rm -rf ~/BotFaz2077/botfaz2077
-
-      - name: Upload new binary
-        uses: appleboy/scp-action@v0.1.1
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          source: target/release/botfaz2077
-          target: ~/BotFaz2077
-          strip_components: 2
-
-      - name: Restart bot
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          script: sudo systemctl restart botfaz2077.service
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
