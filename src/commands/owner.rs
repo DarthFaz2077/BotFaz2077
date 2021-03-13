@@ -1,4 +1,5 @@
 use crate::{ShardManagerContainer, StartTime};
+use humantime::format_duration;
 use serenity::{
     framework::standard::{macros::command, CommandResult},
     model::prelude::*,
@@ -30,14 +31,10 @@ async fn uptime(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
 
     let start_time = data.get::<StartTime>().unwrap();
+    let parsed_time = format_duration(start_time.elapsed().unwrap());
+
     msg.channel_id
-        .say(
-            ctx,
-            format!(
-                "Uptime: {} seconds!",
-                start_time.elapsed().unwrap().as_secs()
-            ),
-        )
+        .say(ctx, format!("Uptime: {}", parsed_time))
         .await?;
 
     Ok(())
