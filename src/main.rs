@@ -1,8 +1,6 @@
 mod commands;
 
-use dotenv::dotenv;
-
-use std::{collections::HashSet, env, sync::Arc, time::SystemTime};
+use std::{collections::HashSet, sync::Arc, time::SystemTime};
 
 use tracing::{debug, error, info, instrument};
 
@@ -18,6 +16,8 @@ use serenity::{
     prelude::*,
 };
 
+use serde::Deserialize;
+
 use commands::{fun::*, general::*, owner::*};
 
 struct ShardManagerContainer;
@@ -32,12 +32,29 @@ impl TypeMapKey for StartTime {
     type Value = SystemTime;
 }
 
+#[derive(Deserialize)]
+struct Config {
+    discord_token: String,
+    prefix: String,
+    activity: String,
+    rust_log: String,
+}
+
+struct BotConfig;
+
+impl TypeMapKey for BotConfig {
+    type Value = Config;
+}
+
 struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn ready(&self, _: Context, ready: Ready) {
+    async fn ready(&self, ctx: Context, ready: Ready) {
         info!("Connected as {}!", ready.user.name);
+        let data = ctx.data.read().await;
+        let activity = &data.get::<BotConfig>().unwrap().activity;
+        ctx.set_activity(Activity::playing(activity)).await;
     }
 
     #[instrument(skip(self, _ctx))]
@@ -85,14 +102,11 @@ async fn my_help(
 #[tokio::main]
 #[instrument]
 async fn main() {
-    dotenv().ok();
-
     tracing_subscriber::fmt::init();
 
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment!");
-    let prefix = env::var("PREFIX").expect("Expected a prefix in the environment!");
+    let config = envy::from_env::<Config>().unwrap();
 
-    let http = Http::new_with_token(&token);
+    let http = Http::new_with_token(&config.discord_token);
 
     let (owners, _bot_id) = match http.get_current_application_info().await {
         Ok(info) => {
@@ -105,14 +119,14 @@ async fn main() {
     };
 
     let framework = StandardFramework::new()
-        .configure(|c| c.owners(owners).prefix(&prefix))
+        .configure(|c| c.owners(owners).prefix(&config.prefix))
         .group(&FUN_GROUP)
         .group(&GENERAL_GROUP)
         .group(&OWNER_GROUP)
         .help(&MY_HELP)
         .before(before);
 
-    let mut client = Client::builder(&token)
+    let mut client = Client::builder(&config.discord_token)
         .framework(framework)
         .event_handler(Handler)
         .await
@@ -126,6 +140,11 @@ async fn main() {
     {
         let mut data = client.data.write().await;
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
+    }
+
+    {
+        let mut data = client.data.write().await;
+        data.insert::<BotConfig>(config);
     }
 
     if let Err(why) = client.start().await {
