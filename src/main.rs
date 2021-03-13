@@ -135,15 +135,7 @@ async fn main() {
     {
         let mut data = client.data.write().await;
         data.insert::<StartTime>(SystemTime::now());
-    }
-
-    {
-        let mut data = client.data.write().await;
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
-    }
-
-    {
-        let mut data = client.data.write().await;
         data.insert::<BotConfig>(config);
     }
 
