@@ -1,6 +1,6 @@
 mod commands;
 
-use std::{collections::HashSet, sync::Arc, time::SystemTime};
+use std::{collections::HashSet, fs, sync::Arc, time::SystemTime};
 
 use tracing::{debug, error, info, instrument};
 
@@ -46,13 +46,20 @@ impl TypeMapKey for BotConfig {
     type Value = Config;
 }
 
+struct BotVersion;
+
+impl TypeMapKey for BotVersion {
+    type Value = String;
+}
+
 struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
     async fn ready(&self, ctx: Context, ready: Ready) {
-        info!("Connected as {}!", ready.user.name);
         let data = ctx.data.read().await;
+        info!("Connected as {}!", ready.user.name);
+        info!("Version: {}", &data.get::<BotVersion>().unwrap());
         let activity = &data.get::<BotConfig>().unwrap().activity;
         ctx.set_activity(Activity::playing(activity)).await;
     }
@@ -83,7 +90,7 @@ struct Fun;
 struct General;
 
 #[group]
-#[commands(shutdown, uptime)]
+#[commands(shutdown, uptime, version)]
 struct Owner;
 
 #[help]
@@ -103,6 +110,9 @@ async fn my_help(
 #[instrument]
 async fn main() {
     tracing_subscriber::fmt::init();
+
+    let hash = blake3::hash(&fs::read(std::env::current_exe().unwrap()).unwrap());
+    let version_hash = hash.to_hex().to_string();
 
     let config = envy::from_env::<Config>().unwrap();
 
@@ -137,6 +147,7 @@ async fn main() {
         data.insert::<StartTime>(SystemTime::now());
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
         data.insert::<BotConfig>(config);
+        data.insert::<BotVersion>(version_hash);
     }
 
     if let Err(why) = client.start().await {

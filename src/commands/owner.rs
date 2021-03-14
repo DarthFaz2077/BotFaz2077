@@ -1,4 +1,4 @@
-use crate::{ShardManagerContainer, StartTime};
+use crate::{BotVersion, ShardManagerContainer, StartTime};
 use humantime::format_duration;
 use serenity::{
     framework::standard::{macros::command, CommandResult},
@@ -35,6 +35,19 @@ async fn uptime(ctx: &Context, msg: &Message) -> CommandResult {
 
     msg.channel_id
         .say(ctx, format!("Uptime: {}", parsed_time))
+        .await?;
+
+    Ok(())
+}
+
+#[command]
+#[owners_only]
+async fn version(ctx: &Context, msg: &Message) -> CommandResult {
+    let data = ctx.data.read().await;
+    let version_hash = data.get::<BotVersion>().unwrap();
+
+    msg.channel_id
+        .say(ctx, format!("Version: {}", version_hash))
         .await?;
 
     Ok(())
