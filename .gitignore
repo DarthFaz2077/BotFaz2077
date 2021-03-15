@@ -1,5 +1,5 @@
-# env file
-.env
+# docker-compose file
+docker-compose.yml
 
 # batch file used for testing on windows
 start.bat
