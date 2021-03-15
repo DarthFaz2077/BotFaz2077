@@ -1,3 +1,27 @@
 # BotFaz2077
 
-Simple Bot for Discord
+![Build Status](https://img.shields.io/github/workflow/status/DarthFaz2077/Botfaz2077/Build%20and%20push%20new%20version%20to%20DockerHub?style=for-the-badge)
+![Docker Image Size](https://img.shields.io/docker/image-size/darthfaz2077/botfaz2077/latest?style=for-the-badge)
+![License](https://img.shields.io/github/license/DarthFaz2077/BotFaz2077?style=for-the-badge)
+
+Simple Bot for Discord.
+
+## Usage
+
+1. Copy docker-compose.yml.example to docker-compose.yml and update as needed. See example below:
+
+```yml
+version: "3"
+services:
+  botfaz2077:
+    container_name: botfaz2077
+    image: darthfaz2077/botfaz2077:latest
+    environment:
+        DISCORD_TOKEN: "your token"
+        PREFIX: "bf!"
+        ACTIVITY: "with rust"
+        RUST_LOG: "info"
+    restart: unless-stopped
+```
+
+2. Run `docker-compose up --detach`.
