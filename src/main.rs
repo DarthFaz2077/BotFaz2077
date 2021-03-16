@@ -37,7 +37,6 @@ struct Config {
     discord_token: String,
     prefix: String,
     activity: String,
-    rust_log: String,
 }
 
 struct BotConfig;
