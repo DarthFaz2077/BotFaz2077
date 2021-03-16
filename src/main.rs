@@ -85,7 +85,7 @@ async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
 struct Fun;
 
 #[group]
-#[commands(ping, urban)]
+#[commands(ping, urban, crypto)]
 struct General;
 
 #[group]

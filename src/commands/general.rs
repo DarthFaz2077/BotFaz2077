@@ -18,6 +18,24 @@ struct List {
     permalink: String,
     example: String,
 }
+#[derive(Debug, Deserialize)]
+struct Crypto {
+    #[serde(default)]
+    ticker: Ticker,
+    #[serde(default)]
+    timestamp: i64,
+    success: bool,
+    error: String,
+}
+
+#[derive(Debug, Deserialize, Default)]
+struct Ticker {
+    base: String,
+    target: String,
+    price: String,
+    volume: String,
+    change: String,
+}
 
 #[command]
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
@@ -78,6 +96,98 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                 m
             })
             .await?;
+    }
+
+    Ok(())
+}
+
+#[command]
+async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    let base = args.single::<String>().unwrap();
+    let target = args.single::<String>().unwrap();
+    let request_url = Url::parse(&format!(
+        "https://api.cryptonator.com/api/ticker/{}-{}",
+        base, target
+    ))?;
+    let response = reqwest::get(request_url).await?.json::<Crypto>().await?;
+
+    if response.success == false {
+        msg.channel_id
+            .send_message(ctx, |m| {
+                m.embed(|e| {
+                    e.title("Crypto Checker");
+                    e.description(response.error);
+                    e.footer(|f| {
+                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.icon_url(msg.author.face())
+                    });
+                    e.timestamp(&Utc::now());
+
+                    e
+                });
+
+                m
+            })
+            .await?;
+    } else {
+        if response.ticker.volume.is_empty() {
+            msg.channel_id
+                .send_message(ctx, |m| {
+                    m.embed(|e| {
+                        e.title("Crypto Checker");
+                        e.description(response.ticker.base);
+                        e.field(
+                            "Price:",
+                            format!("{} {}", response.ticker.price, response.ticker.target),
+                            false,
+                        );
+                        e.field(
+                            "Change:",
+                            format!("{} {}", response.ticker.change, response.ticker.target),
+                            false,
+                        );
+                        e.footer(|f| {
+                            f.text(format!("Requested by {}", msg.author.tag()));
+                            f.icon_url(msg.author.face())
+                        });
+                        e.timestamp(&Utc::now());
+
+                        e
+                    });
+
+                    m
+                })
+                .await?;
+        } else {
+            msg.channel_id
+                .send_message(ctx, |m| {
+                    m.embed(|e| {
+                        e.title("Crypto Checker");
+                        e.description(response.ticker.base);
+                        e.field(
+                            "Price:",
+                            format!("{} {}", response.ticker.price, response.ticker.target),
+                            false,
+                        );
+                        e.field("Volume:", response.ticker.volume, false);
+                        e.field(
+                            "Change:",
+                            format!("{} {}", response.ticker.change, response.ticker.target),
+                            false,
+                        );
+                        e.footer(|f| {
+                            f.text(format!("Requested by {}", msg.author.tag()));
+                            f.icon_url(msg.author.face())
+                        });
+                        e.timestamp(&Utc::now());
+
+                        e
+                    });
+
+                    m
+                })
+                .await?;
+        }
     }
 
     Ok(())
