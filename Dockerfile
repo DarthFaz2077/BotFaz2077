@@ -14,4 +14,4 @@ RUN apk add --no-cache libgcc
 COPY --from=build /botfaz2077/target/release/botfaz2077 /usr/local/bin/
 
 ENV RUST_LOG=info
-CMD botfaz2077
+CMD ["botfaz2077"]
