@@ -18,17 +18,16 @@ struct List {
     permalink: String,
     example: String,
 }
-#[derive(Debug, Deserialize)]
+#[derive(Deserialize)]
 struct Crypto {
     #[serde(default)]
     ticker: Ticker,
     #[serde(default)]
-    timestamp: i64,
     success: bool,
     error: String,
 }
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Deserialize, Default)]
 struct Ticker {
     base: String,
     target: String,
@@ -198,7 +197,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 }
 
 #[command]
-async fn avatar(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
     if msg.mentions.is_empty() {
         msg.channel_id
             .send_message(ctx, |m| {
