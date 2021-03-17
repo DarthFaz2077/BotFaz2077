@@ -18,10 +18,10 @@ services:
     container_name: botfaz2077
     image: darthfaz2077/botfaz2077:latest
     environment:
-        DISCORD_TOKEN: "your token"
-        PREFIX: "bf!"
-        ACTIVITY: "with rust"
-        RUST_LOG: "info"
+      DISCORD_TOKEN: "your token"
+      PREFIX: "bf!"
+      ACTIVITY: "with rust"
+      RUST_LOG: "info"
     restart: unless-stopped
 ```
 
