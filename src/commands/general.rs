@@ -142,7 +142,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                             false,
                         );
                         e.field(
-                            "Change:",
+                            "1h change:",
                             format!("{} {}", response.ticker.change, response.ticker.target),
                             false,
                         );
@@ -163,15 +163,19 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                 .send_message(ctx, |m| {
                     m.embed(|e| {
                         e.title("Crypto Checker");
-                        e.description(response.ticker.base);
+                        e.description(&response.ticker.base);
                         e.field(
                             "Price:",
                             format!("{} {}", response.ticker.price, response.ticker.target),
                             false,
                         );
-                        e.field("Volume:", response.ticker.volume, false);
                         e.field(
-                            "Change:",
+                            "24h volume:",
+                            format!("{} {}", response.ticker.volume, response.ticker.base),
+                            false,
+                        );
+                        e.field(
+                            "1h change:",
                             format!("{} {}", response.ticker.change, response.ticker.target),
                             false,
                         );
