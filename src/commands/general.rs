@@ -76,6 +76,7 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Urban Dictionary");
+                    e.url(response.list[0].permalink.to_string());
                     e.description(term);
                     e.field(
                         "Top definition:",
@@ -83,7 +84,6 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                         false,
                     );
                     e.field("Example:", response.list[0].example.to_string(), false);
-                    e.url(response.list[0].permalink.to_string());
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
                         f.icon_url(msg.author.face())
