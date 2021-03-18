@@ -1,7 +1,7 @@
 mod commands;
 mod structures;
 
-use structures::client_data::*;
+use structures::{client_data::*, commands::*};
 
 use std::{collections::HashSet, fs, time::SystemTime};
 
@@ -10,15 +10,13 @@ use tracing::{debug, error, info, instrument};
 use serenity::{
     async_trait,
     framework::standard::{
-        help_commands, macros::group, macros::help, macros::hook, Args, CommandGroup,
-        CommandResult, HelpOptions, StandardFramework,
+        help_commands, macros::help, macros::hook, Args, CommandGroup, CommandResult, HelpOptions,
+        StandardFramework,
     },
     http::Http,
     model::prelude::*,
     prelude::*,
 };
-
-use commands::{fun::*, general::*, owner::*};
 
 struct Handler;
 
@@ -48,18 +46,6 @@ async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
 
     true
 }
-
-#[group]
-#[commands(poke, feed, pat)]
-struct Fun;
-
-#[group]
-#[commands(ping, urban, crypto, avatar)]
-struct General;
-
-#[group]
-#[commands(shutdown, uptime, version)]
-struct Owner;
 
 #[help]
 async fn my_help(
