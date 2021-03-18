@@ -1,6 +1,9 @@
-use std::{sync::Arc, time::SystemTime};
 use serde::Deserialize;
-use serenity::{client::bridge::gateway::ShardManager, prelude::{Mutex, TypeMapKey}};
+use serenity::{
+    client::bridge::gateway::ShardManager,
+    prelude::{Mutex, TypeMapKey},
+};
+use std::{sync::Arc, time::SystemTime};
 
 pub struct ShardManagerContainer;
 

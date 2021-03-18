@@ -79,10 +79,12 @@ async fn my_help(
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let hash = blake3::hash(&fs::read(std::env::current_exe().unwrap()).unwrap());
-    let version_hash = hash.to_hex().to_string();
+    let start_time = SystemTime::now();
 
     let config = envy::from_env::<Config>().unwrap();
+
+    let hash = blake3::hash(&fs::read(std::env::current_exe().unwrap()).unwrap());
+    let version_hash = hash.to_hex().to_string();
 
     let http = Http::new_with_token(&config.discord_token);
 
@@ -112,8 +114,9 @@ async fn main() {
 
     {
         let mut data = client.data.write().await;
-        data.insert::<StartTime>(SystemTime::now());
+
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
+        data.insert::<StartTime>(start_time);
         data.insert::<BotConfig>(config);
         data.insert::<BotVersion>(version_hash);
     }
