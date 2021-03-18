@@ -1,4 +1,4 @@
-use chrono::prelude::*;
+use chrono::Utc;
 use reqwest::Url;
 use serde::Deserialize;
 use serenity::{
@@ -38,7 +38,25 @@ struct Ticker {
 
 #[command]
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.channel_id.say(ctx, "Pong!").await?;
+    msg.channel_id
+        .send_message(ctx, |m| {
+            m.embed(|e| {
+                e.title("Ping");
+                e.description("Pong");
+                e.footer(|f| {
+                    f.text(format!("Requested by {}", msg.author.tag()));
+                    f.icon_url(msg.author.face());
+
+                    f
+                });
+                e.timestamp(&Utc::now());
+
+                e
+            });
+
+            m
+        })
+        .await?;
 
     Ok(())
 }
@@ -60,7 +78,9 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                     e.description("No results found!");
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
-                        f.icon_url(msg.author.face())
+                        f.icon_url(msg.author.face());
+
+                        f
                     });
                     e.timestamp(&Utc::now());
 
@@ -85,7 +105,9 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                     e.field("Example:", response.list[0].example.to_string(), false);
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
-                        f.icon_url(msg.author.face())
+                        f.icon_url(msg.author.face());
+
+                        f
                     });
                     e.timestamp(&Utc::now());
 
@@ -118,7 +140,9 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                     e.description(response.error);
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
-                        f.icon_url(msg.author.face())
+                        f.icon_url(msg.author.face());
+
+                        f
                     });
                     e.timestamp(&Utc::now());
 
@@ -147,7 +171,9 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                         );
                         e.footer(|f| {
                             f.text(format!("Requested by {}", msg.author.tag()));
-                            f.icon_url(msg.author.face())
+                            f.icon_url(msg.author.face());
+
+                            f
                         });
                         e.timestamp(&Utc::now());
 
@@ -180,7 +206,9 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                         );
                         e.footer(|f| {
                             f.text(format!("Requested by {}", msg.author.tag()));
-                            f.icon_url(msg.author.face())
+                            f.icon_url(msg.author.face());
+
+                            f
                         });
                         e.timestamp(&Utc::now());
 
@@ -208,7 +236,9 @@ async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
                     e.image(msg.author.face());
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
-                        f.icon_url(msg.author.face())
+                        f.icon_url(msg.author.face());
+
+                        f
                     });
                     e.timestamp(&Utc::now());
 
@@ -229,7 +259,9 @@ async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
                         e.image(user.face());
                         e.footer(|f| {
                             f.text(format!("Requested by {}", msg.author.tag()));
-                            f.icon_url(msg.author.face())
+                            f.icon_url(msg.author.face());
+
+                            f
                         });
                         e.timestamp(&Utc::now());
 

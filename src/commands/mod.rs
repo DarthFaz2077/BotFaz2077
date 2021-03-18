@@ -1,3 +1,3 @@
-pub mod fun;
+pub mod anime;
 pub mod general;
 pub mod owner;

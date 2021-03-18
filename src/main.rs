@@ -1,22 +1,20 @@
 mod commands;
 mod structures;
 
-use structures::{client_data::*, commands::*};
-
-use std::{collections::HashSet, fs, time::SystemTime};
-
-use tracing::{debug, error, info, instrument};
-
 use serenity::{
     async_trait,
     framework::standard::{
-        help_commands, macros::help, macros::hook, Args, CommandGroup, CommandResult, HelpOptions,
-        StandardFramework,
+        help_commands,
+        macros::{help, hook},
+        Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
     },
     http::Http,
     model::prelude::*,
     prelude::*,
 };
+use std::{collections::HashSet, fs, time::SystemTime};
+use structures::{client_data::*, commands::*};
+use tracing::{debug, error, info, instrument};
 
 struct Handler;
 
@@ -86,8 +84,8 @@ async fn main() {
 
     let framework = StandardFramework::new()
         .configure(|c| c.owners(owners).prefix(&config.prefix))
-        .group(&FUN_GROUP)
         .group(&GENERAL_GROUP)
+        .group(&ANIME_GROUP)
         .group(&OWNER_GROUP)
         .help(&MY_HELP)
         .before(before);

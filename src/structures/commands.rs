@@ -1,10 +1,9 @@
+use crate::commands::{anime::*, general::*, owner::*};
 use serenity::framework::standard::macros::group;
 
-use crate::commands::{fun::*, general::*, owner::*};
-
 #[group]
-#[commands(poke, feed, pat)]
-struct Fun;
+#[commands(poke, feed, pat, baka)]
+struct Anime;
 
 #[group]
 #[commands(ping, urban, crypto, avatar)]
