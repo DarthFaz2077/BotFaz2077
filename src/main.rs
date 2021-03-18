@@ -1,12 +1,14 @@
 mod commands;
+mod structures;
 
-use std::{collections::HashSet, fs, sync::Arc, time::SystemTime};
+use structures::client_data::*;
+
+use std::{collections::HashSet, fs, time::SystemTime};
 
 use tracing::{debug, error, info, instrument};
 
 use serenity::{
     async_trait,
-    client::bridge::gateway::ShardManager,
     framework::standard::{
         help_commands, macros::group, macros::help, macros::hook, Args, CommandGroup,
         CommandResult, HelpOptions, StandardFramework,
@@ -16,40 +18,7 @@ use serenity::{
     prelude::*,
 };
 
-use serde::Deserialize;
-
 use commands::{fun::*, general::*, owner::*};
-
-struct ShardManagerContainer;
-
-impl TypeMapKey for ShardManagerContainer {
-    type Value = Arc<Mutex<ShardManager>>;
-}
-
-struct StartTime;
-
-impl TypeMapKey for StartTime {
-    type Value = SystemTime;
-}
-
-#[derive(Deserialize)]
-struct Config {
-    discord_token: String,
-    prefix: String,
-    activity: String,
-}
-
-struct BotConfig;
-
-impl TypeMapKey for BotConfig {
-    type Value = Config;
-}
-
-struct BotVersion;
-
-impl TypeMapKey for BotVersion {
-    type Value = String;
-}
 
 struct Handler;
 
