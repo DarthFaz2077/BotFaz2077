@@ -11,7 +11,7 @@ Simple Bot for Discord.
 
 1. Copy docker-compose.yml.example to docker-compose.yml and update as needed. See example below:
 
-```yml
+```yaml
 version: "3"
 services:
   botfaz2077:
