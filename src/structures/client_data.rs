@@ -35,3 +35,9 @@ pub struct BotVersion;
 impl TypeMapKey for BotVersion {
     type Value = String;
 }
+
+pub struct ReqwestClient;
+
+impl TypeMapKey for ReqwestClient {
+    type Value = reqwest::Client;
+}

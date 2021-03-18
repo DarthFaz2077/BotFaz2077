@@ -70,6 +70,8 @@ async fn main() {
     let hash = blake3::hash(&fs::read(std::env::current_exe().unwrap()).unwrap());
     let version_hash = hash.to_hex().to_string();
 
+    let reqwest_client = reqwest::Client::new();
+
     let http = Http::new_with_token(&config.discord_token);
 
     let (owners, _bot_id) = match http.get_current_application_info().await {
@@ -103,6 +105,7 @@ async fn main() {
         data.insert::<StartTime>(start_time);
         data.insert::<BotConfig>(config);
         data.insert::<BotVersion>(version_hash);
+        data.insert::<ReqwestClient>(reqwest_client);
     }
 
     if let Err(why) = client.start().await {

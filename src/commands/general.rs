@@ -1,3 +1,4 @@
+use crate::structures::client_data::ReqwestClient;
 use chrono::Utc;
 use reqwest::Url;
 use serde::Deserialize;
@@ -63,12 +64,19 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
+    let data = ctx.data.read().await;
+    let reqwest_client = data.get::<ReqwestClient>().cloned().unwrap();
     let term = args.message();
     let request_url = Url::parse_with_params(
         "https://api.urbandictionary.com/v0/define?",
         &[("term", term)],
     )?;
-    let response = reqwest::get(request_url).await?.json::<Root>().await?;
+    let response = reqwest_client
+        .get(request_url)
+        .send()
+        .await?
+        .json::<Root>()
+        .await?;
 
     if response.list.is_empty() {
         msg.channel_id
@@ -124,13 +132,20 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
 
 #[command]
 async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    let data = ctx.data.read().await;
+    let reqwest_client = data.get::<ReqwestClient>().cloned().unwrap();
     let base = args.single::<String>().unwrap();
     let target = args.single::<String>().unwrap();
     let request_url = Url::parse(&format!(
         "https://api.cryptonator.com/api/ticker/{}-{}",
         base, target
     ))?;
-    let response = reqwest::get(request_url).await?.json::<Crypto>().await?;
+    let response = reqwest_client
+        .get(request_url)
+        .send()
+        .await?
+        .json::<Crypto>()
+        .await?;
 
     if response.success == false {
         msg.channel_id
