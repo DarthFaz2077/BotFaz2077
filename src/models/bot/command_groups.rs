@@ -6,7 +6,7 @@ use serenity::framework::standard::macros::group;
 pub struct General;
 
 #[group]
-#[commands(baka, feed, pat, poke)]
+#[commands(baka, cry, feed, pat, poke)]
 pub struct Anime;
 
 #[group]
