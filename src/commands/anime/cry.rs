@@ -29,10 +29,10 @@ async fn cry(ctx: &Context, msg: &Message) -> CommandResult {
         .send_message(ctx, |m| {
             m.embed(|e| {
                 e.title("Cry");
-                e.description(format!("{} cries", msg.author.tag()));
+                e.description(format!("{} cries.", msg.author.tag()));
                 e.image(response.image);
                 e.footer(|f| {
-                    f.text(format!("Requested by {}", msg.author.tag()));
+                    f.text(format!("Requested by {}.", msg.author.tag()));
                     f.icon_url(msg.author.face());
 
                     f

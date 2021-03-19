@@ -18,7 +18,7 @@ async fn version(ctx: &Context, msg: &Message) -> CommandResult {
                 e.title("Version");
                 e.description(version_hash);
                 e.footer(|f| {
-                    f.text(format!("Requested by {}", msg.author.tag()));
+                    f.text(format!("Requested by {}.", msg.author.tag()));
                     f.icon_url(msg.author.face());
 
                     f

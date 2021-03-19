@@ -11,9 +11,9 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
         .send_message(ctx, |m| {
             m.embed(|e| {
                 e.title("Ping");
-                e.description("Pong");
+                e.description("Pong!");
                 e.footer(|f| {
-                    f.text(format!("Requested by {}", msg.author.tag()));
+                    f.text(format!("Requested by {}.", msg.author.tag()));
                     f.icon_url(msg.author.face());
 
                     f

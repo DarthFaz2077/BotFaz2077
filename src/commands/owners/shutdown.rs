@@ -16,9 +16,9 @@ async fn shutdown(ctx: &Context, msg: &Message) -> CommandResult {
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Shutdown");
-                    e.description("Shutting down");
+                    e.description("Shutting down!");
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -37,9 +37,9 @@ async fn shutdown(ctx: &Context, msg: &Message) -> CommandResult {
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Shutdown");
-                    e.description("There was a problem getting the shard manager");
+                    e.description("There was a problem getting the shard manager!");
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f

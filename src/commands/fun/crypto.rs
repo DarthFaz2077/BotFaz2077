@@ -35,7 +35,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                     e.title("Crypto Checker");
                     e.description("Send a pair to search for, please!");
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -74,7 +74,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                     e.title("Crypto Checker");
                     e.description(response.error);
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -105,7 +105,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                             false,
                         );
                         e.footer(|f| {
-                            f.text(format!("Requested by {}", msg.author.tag()));
+                            f.text(format!("Requested by {}.", msg.author.tag()));
                             f.icon_url(msg.author.face());
 
                             f
@@ -140,7 +140,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                             false,
                         );
                         e.footer(|f| {
-                            f.text(format!("Requested by {}", msg.author.tag()));
+                            f.text(format!("Requested by {}.", msg.author.tag()));
                             f.icon_url(msg.author.face());
 
                             f

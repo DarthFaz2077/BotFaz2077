@@ -22,7 +22,7 @@ async fn poke(ctx: &Context, msg: &Message) -> CommandResult {
                     e.title("Poke");
                     e.description("Mention someone, please!");
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -54,13 +54,13 @@ async fn poke(ctx: &Context, msg: &Message) -> CommandResult {
             m.embed(|e| {
                 e.title("Poke");
                 e.description(format!(
-                    "{} pokes {}",
+                    "{} pokes {}.",
                     msg.author.tag(),
                     msg.mentions[0].tag()
                 ));
                 e.image(response.image);
                 e.footer(|f| {
-                    f.text(format!("Requested by {}", msg.author.tag()));
+                    f.text(format!("Requested by {}.", msg.author.tag()));
                     f.icon_url(msg.author.face());
 
                     f

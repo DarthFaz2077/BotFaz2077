@@ -31,7 +31,7 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                     e.title("Urban Dictionary");
                     e.description("Send a term to search for, please!");
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -69,7 +69,7 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                     e.title("Urban Dictionary");
                     e.description("No results found!");
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -100,7 +100,7 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                         false,
                     );
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f

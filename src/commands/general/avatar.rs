@@ -16,7 +16,7 @@ async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
                     e.description(msg.author.tag());
                     e.image(msg.author.face());
                     e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
+                        f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
 
                         f
@@ -39,7 +39,7 @@ async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
                         e.description(user.tag());
                         e.image(user.face());
                         e.footer(|f| {
-                            f.text(format!("Requested by {}", msg.author.tag()));
+                            f.text(format!("Requested by {}.", msg.author.tag()));
                             f.icon_url(msg.author.face());
 
                             f
