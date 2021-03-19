@@ -46,7 +46,7 @@ async fn poke(ctx: &Context, msg: &Message) -> CommandResult {
             m.embed(|e| {
                 e.title("Poke");
                 e.description(format!(
-                    "{} pokes {}d",
+                    "{} pokes {}",
                     msg.author.tag(),
                     msg.mentions[0].tag()
                 ));
@@ -75,7 +75,7 @@ async fn feed(ctx: &Context, msg: &Message) -> CommandResult {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
-                    e.title("Poke");
+                    e.title("Feed");
                     e.description("Mention someone, please!");
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
@@ -131,7 +131,7 @@ async fn pat(ctx: &Context, msg: &Message) -> CommandResult {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
-                    e.title("Poke");
+                    e.title("Pat");
                     e.description("Mention someone, please!");
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
@@ -187,7 +187,7 @@ async fn baka(ctx: &Context, msg: &Message) -> CommandResult {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
-                    e.title("Poke");
+                    e.title("Baka");
                     e.description("Mention someone, please!");
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
