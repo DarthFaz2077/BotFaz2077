@@ -6,7 +6,9 @@ use serenity::framework::standard::macros::group;
 pub struct General;
 
 #[group]
-#[commands(baka, cry, feed, pat, poke)]
+#[commands(
+    baka, cry, cuddle, feed, hug, kiss, laugh, lick, pat, poke, slap, smug, tickle
+)]
 pub struct Anime;
 
 #[group]

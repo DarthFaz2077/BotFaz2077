@@ -1,11 +1,27 @@
 pub mod baka;
 pub mod cry;
+pub mod cuddle;
 pub mod feed;
+pub mod hug;
+pub mod kiss;
+pub mod laugh;
+pub mod lick;
 pub mod pat;
 pub mod poke;
+pub mod slap;
+pub mod smug;
+pub mod tickle;
 
 pub use self::baka::*;
 pub use self::cry::*;
+pub use self::cuddle::*;
 pub use self::feed::*;
+pub use self::hug::*;
+pub use self::kiss::*;
+pub use self::laugh::*;
+pub use self::lick::*;
 pub use self::pat::*;
 pub use self::poke::*;
+pub use self::slap::*;
+pub use self::smug::*;
+pub use self::tickle::*;
