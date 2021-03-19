@@ -1,26 +1,15 @@
-use crate::structures::client_data::ReqwestClient;
+use crate::models::bot::data::ReqwestClientContainer;
 use chrono::Utc;
 use reqwest::Url;
 use serde::Deserialize;
 use serenity::{
+    client::Context,
     framework::standard::{macros::command, Args, CommandResult},
-    model::prelude::*,
-    prelude::*,
+    model::channel::Message,
 };
 
 #[derive(Deserialize)]
-struct Root {
-    list: Vec<List>,
-}
-
-#[derive(Deserialize)]
-struct List {
-    definition: String,
-    permalink: String,
-    example: String,
-}
-#[derive(Deserialize)]
-struct Crypto {
+struct Response {
     #[serde(default)]
     ticker: Ticker,
     #[serde(default)]
@@ -38,52 +27,13 @@ struct Ticker {
 }
 
 #[command]
-async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.channel_id
-        .send_message(ctx, |m| {
-            m.embed(|e| {
-                e.title("Ping");
-                e.description("Pong");
-                e.footer(|f| {
-                    f.text(format!("Requested by {}", msg.author.tag()));
-                    f.icon_url(msg.author.face());
-
-                    f
-                });
-                e.timestamp(&Utc::now());
-
-                e
-            });
-
-            m
-        })
-        .await?;
-
-    Ok(())
-}
-
-#[command]
-async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    let data = ctx.data.read().await;
-    let reqwest_client = data.get::<ReqwestClient>().cloned().unwrap();
-    let term = args.message();
-    let request_url = Url::parse_with_params(
-        "https://api.urbandictionary.com/v0/define?",
-        &[("term", term)],
-    )?;
-    let response = reqwest_client
-        .get(request_url)
-        .send()
-        .await?
-        .json::<Root>()
-        .await?;
-
-    if response.list.is_empty() {
+async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+    if args.is_empty() {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
-                    e.title("Urban Dictionary");
-                    e.description("No results found!");
+                    e.title("Crypto Checker");
+                    e.description("Send a pair to search for, please!");
                     e.footer(|f| {
                         f.text(format!("Requested by {}", msg.author.tag()));
                         f.icon_url(msg.author.face());
@@ -98,42 +48,12 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
                 m
             })
             .await?;
-    } else {
-        msg.channel_id
-            .send_message(ctx, |m| {
-                m.embed(|e| {
-                    e.title("Urban Dictionary");
-                    e.url(response.list[0].permalink.to_string());
-                    e.description(term);
-                    e.field(
-                        "Top definition:",
-                        response.list[0].definition.to_string(),
-                        false,
-                    );
-                    e.field("Example:", response.list[0].example.to_string(), false);
-                    e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
-                        f.icon_url(msg.author.face());
 
-                        f
-                    });
-                    e.timestamp(&Utc::now());
-
-                    e
-                });
-
-                m
-            })
-            .await?;
+        return Ok(());
     }
 
-    Ok(())
-}
-
-#[command]
-async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let data = ctx.data.read().await;
-    let reqwest_client = data.get::<ReqwestClient>().cloned().unwrap();
+    let reqwest_client = data.get::<ReqwestClientContainer>().cloned().unwrap();
     let base = args.single::<String>().unwrap();
     let target = args.single::<String>().unwrap();
     let request_url = Url::parse(&format!(
@@ -144,7 +64,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
         .get(request_url)
         .send()
         .await?
-        .json::<Crypto>()
+        .json::<Response>()
         .await?;
 
     if response.success == false {
@@ -219,59 +139,6 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                             format!("{} {}", response.ticker.change, response.ticker.target),
                             false,
                         );
-                        e.footer(|f| {
-                            f.text(format!("Requested by {}", msg.author.tag()));
-                            f.icon_url(msg.author.face());
-
-                            f
-                        });
-                        e.timestamp(&Utc::now());
-
-                        e
-                    });
-
-                    m
-                })
-                .await?;
-        }
-    }
-
-    Ok(())
-}
-
-#[command]
-async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
-    if msg.mentions.is_empty() {
-        msg.channel_id
-            .send_message(ctx, |m| {
-                m.embed(|e| {
-                    e.title("Avatar");
-                    e.url(msg.author.face());
-                    e.description(msg.author.tag());
-                    e.image(msg.author.face());
-                    e.footer(|f| {
-                        f.text(format!("Requested by {}", msg.author.tag()));
-                        f.icon_url(msg.author.face());
-
-                        f
-                    });
-                    e.timestamp(&Utc::now());
-
-                    e
-                });
-
-                m
-            })
-            .await?;
-    } else {
-        for user in &msg.mentions {
-            msg.channel_id
-                .send_message(ctx, |m| {
-                    m.embed(|e| {
-                        e.title("Avatar");
-                        e.url(user.face());
-                        e.description(user.tag());
-                        e.image(user.face());
                         e.footer(|f| {
                             f.text(format!("Requested by {}", msg.author.tag()));
                             f.icon_url(msg.author.face());

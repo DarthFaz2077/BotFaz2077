@@ -1,62 +1,14 @@
 mod commands;
-mod structures;
+mod listeners;
+mod models;
+mod utilities;
 
-use serenity::{
-    async_trait,
-    framework::standard::{
-        help_commands,
-        macros::{help, hook},
-        Args, CommandGroup, CommandResult, HelpOptions, StandardFramework,
-    },
-    http::Http,
-    model::prelude::*,
-    prelude::*,
-};
+use crate::listeners::{handlers::event_handler::Handler, hooks::before::before};
+use crate::models::bot::{commands::*, config::*, data::*};
+use crate::utilities::help::*;
+use serenity::{framework::standard::StandardFramework, http::Http, prelude::*};
 use std::{collections::HashSet, fs, time::SystemTime};
-use structures::{client_data::*, commands::*};
-use tracing::{debug, error, info, instrument};
-
-struct Handler;
-
-#[async_trait]
-impl EventHandler for Handler {
-    async fn ready(&self, ctx: Context, ready: Ready) {
-        let data = ctx.data.read().await;
-        info!("Connected as {}!", ready.user.name);
-        info!("Version: {}", &data.get::<BotVersion>().unwrap());
-        let activity = &data.get::<BotConfig>().unwrap().activity;
-        ctx.set_activity(Activity::playing(activity)).await;
-    }
-
-    #[instrument(skip(self, _ctx))]
-    async fn resume(&self, _ctx: Context, resume: ResumedEvent) {
-        debug!("Resumed; trace:{:?}", resume.trace)
-    }
-}
-
-#[hook]
-#[instrument]
-async fn before(_: &Context, msg: &Message, command_name: &str) -> bool {
-    info!(
-        "Got command '{}' by user '{}'.",
-        command_name, msg.author.name
-    );
-
-    true
-}
-
-#[help]
-async fn my_help(
-    context: &Context,
-    msg: &Message,
-    args: Args,
-    help_options: &'static HelpOptions,
-    groups: &[&'static CommandGroup],
-    owners: HashSet<UserId>,
-) -> CommandResult {
-    let _ = help_commands::with_embeds(context, msg, args, help_options, groups, owners).await;
-    Ok(())
-}
+use tracing::{error, instrument};
 
 #[tokio::main]
 #[instrument]
@@ -88,8 +40,9 @@ async fn main() {
         .configure(|c| c.owners(owners).prefix(&config.prefix))
         .group(&GENERAL_GROUP)
         .group(&ANIME_GROUP)
-        .group(&OWNER_GROUP)
-        .help(&MY_HELP)
+        .group(&FUN_GROUP)
+        .group(&OWNERS_GROUP)
+        .help(&HELP)
         .before(before);
 
     let mut client = Client::builder(&config.discord_token)
@@ -105,7 +58,7 @@ async fn main() {
         data.insert::<StartTime>(start_time);
         data.insert::<BotConfig>(config);
         data.insert::<BotVersion>(version_hash);
-        data.insert::<ReqwestClient>(reqwest_client);
+        data.insert::<ReqwestClientContainer>(reqwest_client);
     }
 
     if let Err(why) = client.start().await {
