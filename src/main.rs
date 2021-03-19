@@ -4,7 +4,7 @@ mod models;
 mod utilities;
 
 use crate::listeners::{handlers::event_handler::Handler, hooks::before::before};
-use crate::models::bot::{commands::*, config::*, data::*};
+use crate::models::bot::{command_groups::*, config::*, data::*};
 use crate::utilities::help::*;
 use serenity::{framework::standard::StandardFramework, http::Http, prelude::*};
 use std::{collections::HashSet, fs, time::SystemTime};
