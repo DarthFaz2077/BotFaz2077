@@ -9,7 +9,7 @@ use serenity::{
 };
 
 #[derive(Deserialize)]
-struct Response {
+struct ResponseJson {
     #[serde(rename = "list")]
     definitions: Vec<Definition>,
 }
@@ -57,14 +57,35 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
         "https://api.urbandictionary.com/v0/define?",
         &[("term", term)],
     )?;
-    let response = reqwest_client
-        .get(request_url)
-        .send()
-        .await?
-        .json::<Response>()
-        .await?;
+    let response = reqwest_client.get(request_url).send().await?;
 
-    if response.definitions.is_empty() {
+    if !response.status().is_success() {
+        msg.channel_id
+            .send_message(ctx, |m| {
+                m.embed(|e| {
+                    e.title("Smug");
+                    e.description("There was a problem getting the results!");
+                    e.footer(|f| {
+                        f.text(format!("Requested by {}.", msg.author.tag()));
+                        f.icon_url(msg.author.face());
+
+                        f
+                    });
+                    e.timestamp(&Utc::now());
+
+                    e
+                });
+
+                m
+            })
+            .await?;
+
+        return Ok(());
+    }
+
+    let response_json = response.json::<ResponseJson>().await?;
+
+    if response_json.definitions.is_empty() {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
@@ -89,16 +110,16 @@ async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Urban Dictionary");
-                    e.url(response.definitions[0].permalink.to_string());
+                    e.url(response_json.definitions[0].permalink.to_string());
                     e.description(term);
                     e.field(
                         "Top definition:",
-                        response.definitions[0].description.to_string(),
+                        response_json.definitions[0].description.to_string(),
                         false,
                     );
                     e.field(
                         "Example:",
-                        response.definitions[0].example.to_string(),
+                        response_json.definitions[0].example.to_string(),
                         false,
                     );
                     e.footer(|f| {

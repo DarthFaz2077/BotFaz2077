@@ -9,7 +9,7 @@ use serenity::{
 };
 
 #[derive(Deserialize)]
-struct Response {
+struct ResponseJson {
     #[serde(default)]
     ticker: Ticker,
     #[serde(default)]
@@ -62,19 +62,40 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
         "https://api.cryptonator.com/api/ticker/{}-{}",
         base, target
     ))?;
-    let response = reqwest_client
-        .get(request_url)
-        .send()
-        .await?
-        .json::<Response>()
-        .await?;
+    let response = reqwest_client.get(request_url).send().await?;
 
-    if response.success == false {
+    if !response.status().is_success() {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Crypto Checker");
-                    e.description(response.error);
+                    e.description("There was a problem getting the results!");
+                    e.footer(|f| {
+                        f.text(format!("Requested by {}.", msg.author.tag()));
+                        f.icon_url(msg.author.face());
+
+                        f
+                    });
+                    e.timestamp(&Utc::now());
+
+                    e
+                });
+
+                m
+            })
+            .await?;
+
+        return Ok(());
+    }
+
+    let response_json = response.json::<ResponseJson>().await?;
+
+    if response_json.success == false {
+        msg.channel_id
+            .send_message(ctx, |m| {
+                m.embed(|e| {
+                    e.title("Crypto Checker");
+                    e.description(response_json.error);
                     e.footer(|f| {
                         f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
@@ -90,20 +111,26 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
             })
             .await?;
     } else {
-        if response.ticker.volume.is_empty() {
+        if response_json.ticker.volume.is_empty() {
             msg.channel_id
                 .send_message(ctx, |m| {
                     m.embed(|e| {
                         e.title("Crypto Checker");
-                        e.description(response.ticker.base);
+                        e.description(response_json.ticker.base);
                         e.field(
                             "Price:",
-                            format!("{} {}", response.ticker.price, response.ticker.target),
+                            format!(
+                                "{} {}",
+                                response_json.ticker.price, response_json.ticker.target
+                            ),
                             false,
                         );
                         e.field(
                             "1h change:",
-                            format!("{} {}", response.ticker.change, response.ticker.target),
+                            format!(
+                                "{} {}",
+                                response_json.ticker.change, response_json.ticker.target
+                            ),
                             false,
                         );
                         e.footer(|f| {
@@ -125,20 +152,29 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                 .send_message(ctx, |m| {
                     m.embed(|e| {
                         e.title("Crypto Checker");
-                        e.description(&response.ticker.base);
+                        e.description(&response_json.ticker.base);
                         e.field(
                             "Price:",
-                            format!("{} {}", response.ticker.price, response.ticker.target),
+                            format!(
+                                "{} {}",
+                                response_json.ticker.price, response_json.ticker.target
+                            ),
                             false,
                         );
                         e.field(
                             "24h volume:",
-                            format!("{} {}", response.ticker.volume, response.ticker.base),
+                            format!(
+                                "{} {}",
+                                response_json.ticker.volume, response_json.ticker.base
+                            ),
                             false,
                         );
                         e.field(
                             "1h change:",
-                            format!("{} {}", response.ticker.change, response.ticker.target),
+                            format!(
+                                "{} {}",
+                                response_json.ticker.change, response_json.ticker.target
+                            ),
                             false,
                         );
                         e.footer(|f| {
