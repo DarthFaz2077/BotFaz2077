@@ -8,6 +8,8 @@ use serenity::{
 };
 
 #[command]
+#[description = "Check bot's uptime."]
+#[example("")]
 #[owners_only]
 async fn uptime(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;

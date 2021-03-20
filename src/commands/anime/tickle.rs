@@ -14,6 +14,9 @@ struct Response {
 }
 
 #[command]
+#[description = "Tickle someone."]
+#[example("@mention")]
+#[only_in(guilds)]
 async fn tickle(ctx: &Context, msg: &Message) -> CommandResult {
     if msg.mentions.is_empty() {
         msg.channel_id

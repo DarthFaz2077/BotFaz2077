@@ -27,6 +27,8 @@ struct Ticker {
 }
 
 #[command]
+#[description = "Check price of cryptocurrency."]
+#[example("TAG1 TAG2")]
 async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     if args.is_empty() {
         msg.channel_id

@@ -14,6 +14,9 @@ struct Response {
 }
 
 #[command]
+#[description = "Slap someone."]
+#[example("@mention")]
+#[only_in(guilds)]
 async fn slap(ctx: &Context, msg: &Message) -> CommandResult {
     if msg.mentions.is_empty() {
         msg.channel_id

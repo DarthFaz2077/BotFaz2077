@@ -7,6 +7,8 @@ use serenity::{
 };
 
 #[command]
+#[description = "Check bot's version."]
+#[example("")]
 #[owners_only]
 async fn version(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;

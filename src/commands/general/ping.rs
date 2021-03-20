@@ -6,6 +6,8 @@ use serenity::{
 };
 
 #[command]
+#[description = "Ping."]
+#[example("")]
 async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     msg.channel_id
         .send_message(ctx, |m| {

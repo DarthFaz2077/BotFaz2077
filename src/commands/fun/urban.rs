@@ -23,6 +23,8 @@ struct Definition {
 }
 
 #[command]
+#[description = "Check a definition in Urban Dictionary."]
+#[example("word")]
 async fn urban(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     if args.is_empty() {
         msg.channel_id

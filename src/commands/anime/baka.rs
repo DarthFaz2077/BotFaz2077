@@ -14,6 +14,9 @@ struct Response {
 }
 
 #[command]
+#[description = "Call someone a baka."]
+#[example("@mention")]
+#[only_in(guilds)]
 async fn baka(ctx: &Context, msg: &Message) -> CommandResult {
     if msg.mentions.is_empty() {
         msg.channel_id

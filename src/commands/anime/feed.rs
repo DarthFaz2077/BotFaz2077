@@ -14,6 +14,9 @@ struct Response {
 }
 
 #[command]
+#[description = "Feed someone."]
+#[example("@mention")]
+#[only_in(guilds)]
 async fn feed(ctx: &Context, msg: &Message) -> CommandResult {
     if msg.mentions.is_empty() {
         msg.channel_id

@@ -6,6 +6,10 @@ use serenity::{
 };
 
 #[command]
+#[description = "Show the avatars of mentioned people, or your own."]
+#[example("")]
+#[example("@mention")]
+#[example("@mention1 @mention2")]
 async fn avatar(ctx: &Context, msg: &Message) -> CommandResult {
     if msg.mentions.is_empty() {
         msg.channel_id

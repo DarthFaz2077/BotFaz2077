@@ -14,6 +14,9 @@ struct Response {
 }
 
 #[command]
+#[description = "Laugh."]
+#[example("")]
+#[only_in(guilds)]
 async fn laugh(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
     let reqwest_client = data.get::<ReqwestClientContainer>().cloned().unwrap();
