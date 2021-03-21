@@ -90,7 +90,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
     let response_json = response.json::<ResponseJson>().await?;
 
-    if response_json.success == false {
+    if !response_json.success {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
@@ -110,88 +110,86 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                 m
             })
             .await?;
+    } else if response_json.ticker.volume.is_empty() {
+        msg.channel_id
+            .send_message(ctx, |m| {
+                m.embed(|e| {
+                    e.title("Crypto Checker");
+                    e.description(response_json.ticker.base);
+                    e.field(
+                        "Price:",
+                        format!(
+                            "{} {}",
+                            response_json.ticker.price, response_json.ticker.target
+                        ),
+                        false,
+                    );
+                    e.field(
+                        "1h change:",
+                        format!(
+                            "{} {}",
+                            response_json.ticker.change, response_json.ticker.target
+                        ),
+                        false,
+                    );
+                    e.footer(|f| {
+                        f.text(format!("Requested by {}.", msg.author.tag()));
+                        f.icon_url(msg.author.face());
+
+                        f
+                    });
+                    e.timestamp(&Utc::now());
+
+                    e
+                });
+
+                m
+            })
+            .await?;
     } else {
-        if response_json.ticker.volume.is_empty() {
-            msg.channel_id
-                .send_message(ctx, |m| {
-                    m.embed(|e| {
-                        e.title("Crypto Checker");
-                        e.description(response_json.ticker.base);
-                        e.field(
-                            "Price:",
-                            format!(
-                                "{} {}",
-                                response_json.ticker.price, response_json.ticker.target
-                            ),
-                            false,
-                        );
-                        e.field(
-                            "1h change:",
-                            format!(
-                                "{} {}",
-                                response_json.ticker.change, response_json.ticker.target
-                            ),
-                            false,
-                        );
-                        e.footer(|f| {
-                            f.text(format!("Requested by {}.", msg.author.tag()));
-                            f.icon_url(msg.author.face());
+        msg.channel_id
+            .send_message(ctx, |m| {
+                m.embed(|e| {
+                    e.title("Crypto Checker");
+                    e.description(&response_json.ticker.base);
+                    e.field(
+                        "Price:",
+                        format!(
+                            "{} {}",
+                            response_json.ticker.price, response_json.ticker.target
+                        ),
+                        false,
+                    );
+                    e.field(
+                        "24h volume:",
+                        format!(
+                            "{} {}",
+                            response_json.ticker.volume, response_json.ticker.base
+                        ),
+                        false,
+                    );
+                    e.field(
+                        "1h change:",
+                        format!(
+                            "{} {}",
+                            response_json.ticker.change, response_json.ticker.target
+                        ),
+                        false,
+                    );
+                    e.footer(|f| {
+                        f.text(format!("Requested by {}.", msg.author.tag()));
+                        f.icon_url(msg.author.face());
 
-                            f
-                        });
-                        e.timestamp(&Utc::now());
-
-                        e
+                        f
                     });
+                    e.timestamp(&Utc::now());
 
-                    m
-                })
-                .await?;
-        } else {
-            msg.channel_id
-                .send_message(ctx, |m| {
-                    m.embed(|e| {
-                        e.title("Crypto Checker");
-                        e.description(&response_json.ticker.base);
-                        e.field(
-                            "Price:",
-                            format!(
-                                "{} {}",
-                                response_json.ticker.price, response_json.ticker.target
-                            ),
-                            false,
-                        );
-                        e.field(
-                            "24h volume:",
-                            format!(
-                                "{} {}",
-                                response_json.ticker.volume, response_json.ticker.base
-                            ),
-                            false,
-                        );
-                        e.field(
-                            "1h change:",
-                            format!(
-                                "{} {}",
-                                response_json.ticker.change, response_json.ticker.target
-                            ),
-                            false,
-                        );
-                        e.footer(|f| {
-                            f.text(format!("Requested by {}.", msg.author.tag()));
-                            f.icon_url(msg.author.face());
+                    e
+                });
 
-                            f
-                        });
-                        e.timestamp(&Utc::now());
-
-                        e
-                    });
-
-                    m
-                })
-                .await?;
-        }
+                m
+            })
+            .await?;
     }
 
     Ok(())
