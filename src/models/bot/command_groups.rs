@@ -4,7 +4,7 @@ use serenity::framework::standard::macros::group;
 #[group]
 #[description = "Various commands."]
 #[summary = "Various commands."]
-#[commands(avatar, ping)]
+#[commands(avatar, ping, profile)]
 pub struct General;
 
 #[group]

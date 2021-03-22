@@ -1,4 +1,5 @@
 use crate::models::bot::config::Config;
+use mongodb::Client as MongoDBClient;
 use reqwest::Client as ReqwestClient;
 use serenity::{
     client::bridge::gateway::ShardManager,
@@ -11,6 +12,7 @@ pub struct StartTime;
 pub struct BotConfig;
 pub struct BotVersion;
 pub struct ReqwestClientContainer;
+pub struct MongoDBContainer;
 
 impl TypeMapKey for ShardManagerContainer {
     type Value = Arc<Mutex<ShardManager>>;
@@ -30,4 +32,8 @@ impl TypeMapKey for BotVersion {
 
 impl TypeMapKey for ReqwestClientContainer {
     type Value = ReqwestClient;
+}
+
+impl TypeMapKey for MongoDBContainer {
+    type Value = MongoDBClient;
 }

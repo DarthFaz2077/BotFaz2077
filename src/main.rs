@@ -6,6 +6,7 @@ mod utilities;
 use crate::listeners::{handlers::event_handler::Handler, hooks::before::before};
 use crate::models::bot::{command_groups::*, config::*, data::*};
 use crate::utilities::help::*;
+use mongodb::Client as MongoDBClient;
 use reqwest::Client as ReqwestClient;
 use serenity::{framework::standard::StandardFramework, http::Http, prelude::*};
 use std::{collections::HashSet, fs, time::SystemTime};
@@ -24,6 +25,10 @@ async fn main() {
     let version_hash = hash.to_hex().to_string();
 
     let reqwest_client = ReqwestClient::new();
+
+    let mongodb_client = MongoDBClient::with_uri_str(&config.mongodburl)
+        .await
+        .unwrap();
 
     let http = Http::new_with_token(&config.discord_token);
 
@@ -60,6 +65,7 @@ async fn main() {
         data.insert::<BotConfig>(config);
         data.insert::<BotVersion>(version_hash);
         data.insert::<ReqwestClientContainer>(reqwest_client);
+        data.insert::<MongoDBContainer>(mongodb_client);
     }
 
     if let Err(why) = client.start().await {
