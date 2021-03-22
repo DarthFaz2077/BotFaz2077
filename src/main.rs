@@ -6,6 +6,7 @@ mod utilities;
 use crate::listeners::{handlers::event_handler::Handler, hooks::before::before};
 use crate::models::bot::{command_groups::*, config::*, data::*};
 use crate::utilities::help::*;
+use reqwest::Client as ReqwestClient;
 use serenity::{framework::standard::StandardFramework, http::Http, prelude::*};
 use std::{collections::HashSet, fs, time::SystemTime};
 use tracing::{error, instrument};
@@ -22,7 +23,7 @@ async fn main() {
     let hash = blake3::hash(&fs::read(std::env::current_exe().unwrap()).unwrap());
     let version_hash = hash.to_hex().to_string();
 
-    let reqwest_client = reqwest::Client::new();
+    let reqwest_client = ReqwestClient::new();
 
     let http = Http::new_with_token(&config.discord_token);
 
