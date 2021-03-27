@@ -1,18 +1,18 @@
-FROM rust:1.50.0-alpine3.13 as planner
+FROM rust:1.51.0-alpine3.13 as planner
 WORKDIR /botfaz2077
 RUN apk add --no-cache musl-dev openssl-dev
 RUN cargo install cargo-chef 
 COPY . .
 RUN cargo chef prepare  --recipe-path recipe.json
 
-FROM rust:1.50.0-alpine3.13 as cacher
+FROM rust:1.51.0-alpine3.13 as cacher
 WORKDIR /botfaz2077
 RUN apk add --no-cache musl-dev openssl-dev
 RUN cargo install cargo-chef
 COPY --from=planner /botfaz2077/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 
-FROM rust:1.50.0-alpine3.13 as builder
+FROM rust:1.51.0-alpine3.13 as builder
 WORKDIR /botfaz2077
 RUN apk add --no-cache musl-dev openssl-dev
 COPY . .
