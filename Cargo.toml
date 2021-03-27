@@ -20,4 +20,9 @@ serenity = "0.10.4"
 tokio = { version = "1.4.0", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.25"
 tracing-futures = "0.2.5"
-mongodb = "2.0.0-alpha"
+tracing-subscriber = "0.2.17"
+
+[dependencies.sqlx]
+version = "0.5.1"
+default-features = false
+features = ["macros", "migrate", "offline", "postgres", "runtime-tokio-rustls"]

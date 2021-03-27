@@ -5,5 +5,5 @@ pub struct Config {
     pub discord_token: String,
     pub prefix: String,
     pub activity: String,
-    pub mongodburl: String,
+    pub postgres_url: String,
 }

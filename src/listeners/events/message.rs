@@ -1,8 +1,7 @@
-use crate::models::bot::data::MongoDBContainer;
+use crate::models::{bot::data::PgPoolContainer, database::user::User};
 use chrono::Utc;
-use mongodb::bson::doc;
-use mongodb::options::UpdateOptions;
 use serenity::{client::Context, model::channel::Message};
+use sqlx::{query, query_as};
 
 pub async fn message(ctx: &Context, new_message: Message) {
     if new_message.author.bot {
@@ -10,40 +9,37 @@ pub async fn message(ctx: &Context, new_message: Message) {
     }
 
     let data = ctx.data.read().await;
-    let mongodb_client = data.get::<MongoDBContainer>().cloned().unwrap();
-    let database_name = ctx
-        .cache
-        .current_user_field(|user| user.name.to_string())
-        .await;
-    let collection = mongodb_client.database(&database_name).collection("users");
+    let pg_pool = data.get::<PgPoolContainer>().cloned().unwrap();
 
-    collection
-        .update_one(
-            doc! { "_id": new_message.author.id.to_string() },
-            doc! { "$inc": { "xp": 1 } },
-            UpdateOptions::builder().upsert(true).build(),
+    query!(
+        "
+        INSERT INTO users(user_id) VALUES($1) 
+        ON CONFLICT (user_id) 
+        DO UPDATE SET total_xp = users.total_xp + 1, current_xp = users.current_xp + 1
+        ",
+        new_message.author.id.0 as i64
+    )
+    .execute(&pg_pool)
+    .await
+    .unwrap();
+
+    let result = query_as!(
+        User,
+        "SELECT * FROM users WHERE user_id = $1",
+        new_message.author.id.0 as i64
+    )
+    .fetch_one(&pg_pool)
+    .await
+    .unwrap();
+
+    if result.current_xp >= 100 {
+        query!(
+            "UPDATE users SET current_xp = 0, level = level + 1 WHERE user_id = $1",
+            new_message.author.id.0 as i64
         )
+        .execute(&pg_pool)
         .await
         .unwrap();
-
-    let result = collection
-        .find_one(doc! { "_id": new_message.author.id.to_string() }, None)
-        .await
-        .unwrap()
-        .unwrap();
-
-    let xp = result.get_i32("xp").unwrap_or(0);
-    let level = result.get_i32("level").unwrap_or(0);
-
-    if xp >= 100 {
-        collection
-            .update_one(
-                doc! { "_id": new_message.author.id.to_string() },
-                doc! { "$inc": { "xp": -100, "level": 1 } },
-                UpdateOptions::builder().upsert(true).build(),
-            )
-            .await
-            .unwrap();
 
         new_message
             .channel_id
@@ -53,7 +49,7 @@ pub async fn message(ctx: &Context, new_message: Message) {
                     e.description(format!(
                         "{} leveled up to level {}.",
                         new_message.author.tag(),
-                        level + 1
+                        result.level + 1
                     ));
                     e.timestamp(&Utc::now());
 
