@@ -13,15 +13,26 @@ Simple Bot for Discord.
 
 ```yaml
 version: "3"
+
 services:
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "your_db_password"
+    restart: unless-stopped
+
   botfaz2077:
-    container_name: botfaz2077
     image: darthfaz2077/botfaz2077:latest
     environment:
-      DISCORD_TOKEN: "your token"
+      DISCORD_TOKEN: "your_token"
       PREFIX: "bf!"
       ACTIVITY: "with rust"
+      POSTGRES_URL: "postgres://postgres:your_db_password@postgres/postgres"
       RUST_LOG: "info"
+    depends_on:
+      - postgres
     restart: unless-stopped
 ```
 
