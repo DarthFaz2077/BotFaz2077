@@ -1,19 +1,23 @@
 [package]
 name = "botfaz2077"
-version = "0.1.1"
+version = "0.1.0"
 authors = ["DarthFaz2077"]
 edition = "2018"
+description = "Simple Bot for Discord."
+readme = "README.md"
+repository = "https://github.com/DarthFaz2077/BotFaz2077"
+license = "MIT"
+keywords = ["bot", "discord", "docker", "serenity"]
 
 [dependencies]
-serenity = "0.10.4"
-tokio = { version = "1.4.0", features = ["macros", "rt-multi-thread"] }
-reqwest = { version = "0.11.2", features = ["json"] }
-serde = { version = "1.0.125", features = ["derive"] }
-tracing = "0.1.25"
-tracing-subscriber = "0.2.17"
-tracing-futures = "0.2.5"
-envy = "0.4.2"
-humantime = "2.1.0"
 blake3 = "0.3.7"
 chrono = "0.4.19"
+envy = "0.4.2"
+humantime = "2.1.0"
+reqwest = { version = "0.11.2", features = ["json"] }
+serde = { version = "1.0.125", features = ["derive"] }
+serenity = "0.10.4"
+tokio = { version = "1.4.0", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.25"
+tracing-futures = "0.2.5"
 mongodb = "2.0.0-alpha"
