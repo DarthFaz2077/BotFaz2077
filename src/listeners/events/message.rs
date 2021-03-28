@@ -1,7 +1,7 @@
-use crate::models::{bot::data::PgPoolContainer, database::user::User};
+use crate::models::bot::data::PgPoolContainer;
 use chrono::Utc;
 use serenity::{client::Context, model::channel::Message};
-use sqlx::{query, query_as};
+use sqlx::query;
 
 pub async fn message(ctx: &Context, new_message: Message) {
     if new_message.author.bot {
@@ -23,9 +23,8 @@ pub async fn message(ctx: &Context, new_message: Message) {
     .await
     .unwrap();
 
-    let result = query_as!(
-        User,
-        "SELECT * FROM users WHERE user_id = $1",
+    let result = query!(
+        "SELECT current_xp, level FROM users WHERE user_id = $1",
         new_message.author.id.0 as i64
     )
     .fetch_one(&pg_pool)

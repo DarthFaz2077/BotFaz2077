@@ -1,11 +1,11 @@
-use crate::models::{bot::data::PgPoolContainer, database::user::User};
+use crate::models::bot::data::PgPoolContainer;
 use chrono::Utc;
 use serenity::{
     client::Context,
     framework::standard::{macros::command, CommandResult},
     model::channel::Message,
 };
-use sqlx::query_as;
+use sqlx::query;
 
 #[command]
 #[description = "Show your own profile."]
@@ -14,9 +14,8 @@ async fn profile(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
     let pg_pool = data.get::<PgPoolContainer>().cloned().unwrap();
 
-    let result = query_as!(
-        User,
-        "SELECT * FROM users WHERE user_id = $1",
+    let result = query!(
+        "SELECT level, current_xp FROM users WHERE user_id = $1",
         msg.author.id.0 as i64
     )
     .fetch_one(&pg_pool)

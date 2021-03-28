@@ -1,26 +1,54 @@
 {
   "db": "PostgreSQL",
-  "1f612b9033ba9ff47bcfe182f04c913a240359154f13cee1b2e93687b6dd497c": {
-    "query": "SELECT * FROM users WHERE user_id = $1",
+  "95c409d1c229041b9175a590880bf743c240866c53bab0f2a7a8a4f54ee3c0c2": {
+    "query": "UPDATE users SET current_xp = 0, level = level + 1 WHERE user_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "a8df3ce61d3e32df50e4820137e0381c16170ebad2477c0cc7924444b3875314": {
+    "query": "SELECT current_xp, level FROM users WHERE user_id = $1",
     "describe": {
       "columns": [
         {
           "ordinal": 0,
-          "name": "user_id",
-          "type_info": "Int8"
+          "name": "current_xp",
+          "type_info": "Int4"
         },
         {
           "ordinal": 1,
           "name": "level",
           "type_info": "Int4"
-        },
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false
+      ]
+    }
+  },
+  "b4db087ce3352881b67653c7f2f2529ea410c56db06de9dca3f0ba32efdd826c": {
+    "query": "SELECT level, current_xp FROM users WHERE user_id = $1",
+    "describe": {
+      "columns": [
         {
-          "ordinal": 2,
-          "name": "total_xp",
+          "ordinal": 0,
+          "name": "level",
           "type_info": "Int4"
         },
         {
-          "ordinal": 3,
+          "ordinal": 1,
           "name": "current_xp",
           "type_info": "Int4"
         }
@@ -32,22 +60,8 @@
       },
       "nullable": [
         false,
-        false,
-        false,
         false
       ]
-    }
-  },
-  "95c409d1c229041b9175a590880bf743c240866c53bab0f2a7a8a4f54ee3c0c2": {
-    "query": "UPDATE users SET current_xp = 0, level = level + 1 WHERE user_id = $1",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Int8"
-        ]
-      },
-      "nullable": []
     }
   },
   "b83d03e543d2a55ee08f3276ec2bdbe72e4ec4b59aa418e3c188b7e7e081cca7": {
