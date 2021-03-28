@@ -45,6 +45,7 @@ async fn main() {
         .configure(|c| c.owners(owners).prefix(&config.prefix))
         .group(&GENERAL_GROUP)
         .group(&ANIME_GROUP)
+        .group(&ECONOMY_GROUP)
         .group(&FUN_GROUP)
         .group(&OWNERS_GROUP)
         .help(&HELP)

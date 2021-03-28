@@ -1,5 +1,18 @@
 {
   "db": "PostgreSQL",
+  "7831092d35f5371601a4970dcc30f0d1a5d47131635c1d28af44aeec0fa9e12a": {
+    "query": "UPDATE users SET coins = coins + 100, daily_date = $1 WHERE user_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Date",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "95c409d1c229041b9175a590880bf743c240866c53bab0f2a7a8a4f54ee3c0c2": {
     "query": "UPDATE users SET current_xp = 0, level = level + 1 WHERE user_id = $1",
     "describe": {
@@ -74,6 +87,26 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "ec5ae8df664da5773caef807f0a377d9e1b8b110014e91d60f5473f09bf7aaf0": {
+    "query": "SELECT daily_date FROM users WHERE user_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "daily_date",
+          "type_info": "Date"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        true
+      ]
     }
   }
 }
