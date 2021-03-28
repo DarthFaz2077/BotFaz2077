@@ -1,5 +1,37 @@
 {
   "db": "PostgreSQL",
+  "015abc717c252f99c90f171dc8cb84cbb3f19b8b9a7c0d7069afaebf3cb242c4": {
+    "query": "SELECT level, current_xp, coins FROM users WHERE user_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "level",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 1,
+          "name": "current_xp",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 2,
+          "name": "coins",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  },
   "1d6ffd9d99f7b9a7520d30638e4275525f2ccc4312dc790a6859451811ab66b6": {
     "query": "INSERT INTO users (user_id) VALUES ($1) ON CONFLICT DO NOTHING",
     "describe": {
@@ -61,32 +93,6 @@
         {
           "ordinal": 1,
           "name": "level",
-          "type_info": "Int4"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "Int8"
-        ]
-      },
-      "nullable": [
-        false,
-        false
-      ]
-    }
-  },
-  "b4db087ce3352881b67653c7f2f2529ea410c56db06de9dca3f0ba32efdd826c": {
-    "query": "SELECT level, current_xp FROM users WHERE user_id = $1",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "level",
-          "type_info": "Int4"
-        },
-        {
-          "ordinal": 1,
-          "name": "current_xp",
           "type_info": "Int4"
         }
       ],

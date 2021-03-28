@@ -18,7 +18,7 @@ async fn profile(ctx: &Context, msg: &Message) -> CommandResult {
 
     if msg.mentions.is_empty() {
         let result = query!(
-            "SELECT level, current_xp FROM users WHERE user_id = $1",
+            "SELECT level, current_xp, coins FROM users WHERE user_id = $1",
             msg.author.id.0 as i64
         )
         .fetch_one(&pg_pool)
@@ -31,6 +31,7 @@ async fn profile(ctx: &Context, msg: &Message) -> CommandResult {
                     e.description(format!("{}'s profile.", msg.author.tag()));
                     e.field("XP:", format!("{}/100", result.current_xp), false);
                     e.field("Level:", result.level, false);
+                    e.field("Coins:", result.coins, false);
                     e.footer(|f| {
                         f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
@@ -48,7 +49,7 @@ async fn profile(ctx: &Context, msg: &Message) -> CommandResult {
     } else {
         for user in &msg.mentions {
             match query!(
-                "SELECT level, current_xp FROM users WHERE user_id = $1",
+                "SELECT level, current_xp, coins FROM users WHERE user_id = $1",
                 user.id.0 as i64
             )
             .fetch_one(&pg_pool)
@@ -62,6 +63,7 @@ async fn profile(ctx: &Context, msg: &Message) -> CommandResult {
                                 e.description(format!("{}'s profile.", user.tag()));
                                 e.field("XP:", format!("{}/100", result.current_xp), false);
                                 e.field("Level:", result.level, false);
+                                e.field("Coins:", result.coins, false);
                                 e.footer(|f| {
                                     f.text(format!("Requested by {}.", msg.author.tag()));
                                     f.icon_url(msg.author.face());
