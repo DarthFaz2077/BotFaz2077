@@ -12,11 +12,15 @@ pub async fn message(ctx: &Context, new_message: Message) {
     let pg_pool = data.get::<PgPoolContainer>().cloned().unwrap();
 
     query!(
-        "
-        INSERT INTO users(user_id) VALUES($1) 
-        ON CONFLICT (user_id) 
-        DO UPDATE SET total_xp = users.total_xp + 1, current_xp = users.current_xp + 1
-        ",
+        "INSERT INTO users (user_id) VALUES ($1) ON CONFLICT DO NOTHING",
+        new_message.author.id.0 as i64
+    )
+    .execute(&pg_pool)
+    .await
+    .unwrap();
+
+    query!(
+        "UPDATE users SET total_xp = total_xp + 1, current_xp = current_xp + 1 WHERE user_id = $1",
         new_message.author.id.0 as i64
     )
     .execute(&pg_pool)

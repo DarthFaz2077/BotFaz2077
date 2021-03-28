@@ -1,5 +1,17 @@
 {
   "db": "PostgreSQL",
+  "1d6ffd9d99f7b9a7520d30638e4275525f2ccc4312dc790a6859451811ab66b6": {
+    "query": "INSERT INTO users (user_id) VALUES ($1) ON CONFLICT DO NOTHING",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "7831092d35f5371601a4970dcc30f0d1a5d47131635c1d28af44aeec0fa9e12a": {
     "query": "UPDATE users SET coins = coins + 100, daily_date = $1 WHERE user_id = $2",
     "describe": {
@@ -7,6 +19,18 @@
       "parameters": {
         "Left": [
           "Date",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "81e0fa7212c3c8b5627c27c92e9e937531a6e4b9f9a41ebcf7b06b9dfb28949b": {
+    "query": "UPDATE users SET total_xp = total_xp + 1, current_xp = current_xp + 1 WHERE user_id = $1",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
           "Int8"
         ]
       },
@@ -75,18 +99,6 @@
         false,
         false
       ]
-    }
-  },
-  "b83d03e543d2a55ee08f3276ec2bdbe72e4ec4b59aa418e3c188b7e7e081cca7": {
-    "query": "\n        INSERT INTO users(user_id) VALUES($1) \n        ON CONFLICT (user_id) \n        DO UPDATE SET total_xp = users.total_xp + 1, current_xp = users.current_xp + 1\n        ",
-    "describe": {
-      "columns": [],
-      "parameters": {
-        "Left": [
-          "Int8"
-        ]
-      },
-      "nullable": []
     }
   },
   "ec5ae8df664da5773caef807f0a377d9e1b8b110014e91d60f5473f09bf7aaf0": {
