@@ -8,8 +8,3 @@ CREATE TABLE IF NOT EXISTS public.users
     daily_date DATE,
     CONSTRAINT user_pkey PRIMARY KEY (user_id)
 )
-
-TABLESPACE pg_default;
-
-ALTER TABLE public.users
-    OWNER to postgres;
