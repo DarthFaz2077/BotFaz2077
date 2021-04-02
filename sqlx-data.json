@@ -44,17 +44,24 @@
       "nullable": []
     }
   },
-  "7831092d35f5371601a4970dcc30f0d1a5d47131635c1d28af44aeec0fa9e12a": {
-    "query": "UPDATE users SET coins = coins + 100, daily_date = $1 WHERE user_id = $2",
+  "3e22a2ccb94a462f61fa12f462c908fb47a7ffa5cf5c4be92de15e97e2d8c985": {
+    "query": "SELECT next_daily FROM users WHERE user_id = $1",
     "describe": {
-      "columns": [],
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "next_daily",
+          "type_info": "Timestamp"
+        }
+      ],
       "parameters": {
         "Left": [
-          "Date",
           "Int8"
         ]
       },
-      "nullable": []
+      "nullable": [
+        true
+      ]
     }
   },
   "81e0fa7212c3c8b5627c27c92e9e937531a6e4b9f9a41ebcf7b06b9dfb28949b": {
@@ -107,24 +114,17 @@
       ]
     }
   },
-  "ec5ae8df664da5773caef807f0a377d9e1b8b110014e91d60f5473f09bf7aaf0": {
-    "query": "SELECT daily_date FROM users WHERE user_id = $1",
+  "cf34dc67980c22c750398ea605b4273e1b322101520dcc1fd19f408c1b9ec36c": {
+    "query": "UPDATE users SET coins = coins + 100, next_daily = $1 WHERE user_id = $2",
     "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "daily_date",
-          "type_info": "Date"
-        }
-      ],
+      "columns": [],
       "parameters": {
         "Left": [
+          "Timestamp",
           "Int8"
         ]
       },
-      "nullable": [
-        true
-      ]
+      "nullable": []
     }
   }
 }

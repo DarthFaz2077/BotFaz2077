@@ -1,5 +1,6 @@
 use crate::models::bot::data::PgPoolContainer;
-use chrono::Utc;
+use chrono::{Duration, Utc};
+use humantime::format_duration;
 use serenity::{
     client::Context,
     framework::standard::{macros::command, CommandResult},
@@ -13,21 +14,24 @@ use sqlx::query;
 async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
     let data = ctx.data.read().await;
     let pg_pool = data.get::<PgPoolContainer>().cloned().unwrap();
-    let date = Utc::now().naive_utc().date();
+    let timestamp = Utc::now().naive_utc();
 
     let result = query!(
-        "SELECT daily_date FROM users WHERE user_id = $1",
+        "SELECT next_daily FROM users WHERE user_id = $1",
         msg.author.id.0 as i64
     )
     .fetch_one(&pg_pool)
     .await?;
 
-    if result.daily_date >= Some(date) {
+    if result.next_daily >= Some(timestamp) {
+        let difference = result.next_daily.unwrap() - timestamp;
+        let formatted_difference = format_duration(difference.to_std().unwrap());
+
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Daily");
-                    e.description("Come back tomorrow.");
+                    e.description(format!("Come back in {}.", formatted_difference));
                     e.footer(|f| {
                         f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
@@ -46,9 +50,11 @@ async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
         return Ok(());
     }
 
+    let next_daily = timestamp + Duration::days(1);
+
     query!(
-        "UPDATE users SET coins = coins + 100, daily_date = $1 WHERE user_id = $2",
-        date,
+        "UPDATE users SET coins = coins + 100, next_daily = $1 WHERE user_id = $2",
+        next_daily,
         msg.author.id.0 as i64
     )
     .execute(&pg_pool)
