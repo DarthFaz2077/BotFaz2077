@@ -13,7 +13,7 @@ use serenity::{
 #[example("https://example.com/image.png")]
 #[owners_only]
 async fn botavatar(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
-    if args.is_empty() && msg.attachments.len() == 0 {
+    if args.is_empty() && msg.attachments.is_empty() {
         msg.channel_id
             .send_message(ctx, |m| {
                 m.embed(|e| {
@@ -73,10 +73,10 @@ async fn botavatar(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
     let data = ctx.data.read().await;
     let reqwest_client = data.get::<ReqwestClientContainer>().cloned().unwrap();
 
-    let url = if msg.attachments.len() == 1 {
-        &msg.attachments[0].url
-    } else {
+    let url = if !args.message().is_empty() {
         args.message()
+    } else {
+        &msg.attachments[0].url
     };
 
     let response = reqwest_client.get(url).send().await?;
