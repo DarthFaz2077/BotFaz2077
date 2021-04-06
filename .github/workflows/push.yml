@@ -6,8 +6,102 @@ on:
       - main
 
 jobs:
+  check:
+    name: Check
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2.3.4
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Cargo check
+        uses: actions-rs/cargo@v1.0.3
+        with:
+          command: check
+
+  test:
+    name: Test Suite
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2.3.4
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Test check
+        uses: actions-rs/cargo@v1.0.3
+        with:
+          command: test
+
+  fmt:
+    name: Rustfmt
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2.3.4
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Add rustfmt
+        run: rustup component add rustfmt
+
+      - name: Rustfmt check
+        uses: actions-rs/cargo@v1.0.3
+        with:
+          command: fmt
+          args: --all -- --check
+
+  clippy:
+    name: Clippy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2.3.4
+
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1.0.7
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Add clippy
+        run: rustup component add clippy
+
+      - name: Clippy check
+        uses: actions-rs/cargo@v1.0.3
+        with:
+          command: clippy
+          args: -- -D warnings
+
   push:
     name: Push
+
+    needs: [check, test, fmt, clippy]
 
     runs-on: ubuntu-latest
 
