@@ -31,5 +31,5 @@ pub struct Fun;
 #[description = "Bot administration commands."]
 #[summary = "Bot administration commands."]
 #[owners_only]
-#[commands(shutdown, uptime, version)]
+#[commands(botavatar, shutdown, uptime, version)]
 pub struct Owners;

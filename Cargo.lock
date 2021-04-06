@@ -153,6 +153,7 @@ dependencies = [
 name = "botfaz2077"
 version = "0.1.0"
 dependencies = [
+ "base64 0.13.0",
  "blake3",
  "chrono",
  "envy",
