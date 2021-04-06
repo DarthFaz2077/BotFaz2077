@@ -3,7 +3,7 @@ pub mod shutdown;
 pub mod uptime;
 pub mod version;
 
+pub use self::botavatar::*;
 pub use self::shutdown::*;
-pub use botavatar::*;
-pub use uptime::*;
-pub use version::*;
+pub use self::uptime::*;
+pub use self::version::*;
