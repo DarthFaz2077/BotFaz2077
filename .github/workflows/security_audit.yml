@@ -5,7 +5,10 @@ on:
 
 jobs:
   audit:
+    name: Security audit
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout sources
         uses: actions/checkout@v2.3.4

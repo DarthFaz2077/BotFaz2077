@@ -98,8 +98,8 @@ jobs:
           command: clippy
           args: -- -D warnings
 
-  push:
-    name: Push
+  build:
+    name: Build
 
     needs: [check, test, fmt, clippy]
 
