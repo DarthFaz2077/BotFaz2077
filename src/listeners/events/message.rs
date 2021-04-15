@@ -19,6 +19,25 @@ pub async fn message(ctx: &Context, new_message: Message) {
     .await
     .unwrap();
 
+    if new_message.guild_id.is_some() {
+        query!(
+            "INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT DO NOTHING",
+            new_message.guild_id.unwrap().0 as i64
+        )
+        .execute(&pg_pool)
+        .await
+        .unwrap();
+
+        query!(
+            "INSERT INTO users_guilds (user_id, guild_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+            new_message.author.id.0 as i64,
+            new_message.guild_id.unwrap().0 as i64
+        )
+        .execute(&pg_pool)
+        .await
+        .unwrap();
+    }
+
     query!(
         "UPDATE users SET total_xp = total_xp + 1, current_xp = current_xp + 1 WHERE user_id = $1",
         new_message.author.id.0 as i64

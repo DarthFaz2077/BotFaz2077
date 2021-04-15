@@ -64,6 +64,19 @@
       ]
     }
   },
+  "493483d7dfa7a22ff8ee3f47f5c27eb180d7d51833c7909bd610ef34bc278df9": {
+    "query": "INSERT INTO users_guilds (user_id, guild_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "81e0fa7212c3c8b5627c27c92e9e937531a6e4b9f9a41ebcf7b06b9dfb28949b": {
     "query": "UPDATE users SET total_xp = total_xp + 1, current_xp = current_xp + 1 WHERE user_id = $1",
     "describe": {
@@ -114,6 +127,18 @@
       ]
     }
   },
+  "c582ba49e685230ff575ffeb988d5e400b32202ccdad7f1394ae0a4f534bebd4": {
+    "query": "INSERT INTO guilds (guild_id) VALUES ($1) ON CONFLICT DO NOTHING",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "cf34dc67980c22c750398ea605b4273e1b322101520dcc1fd19f408c1b9ec36c": {
     "query": "UPDATE users SET coins = coins + 100, next_daily = $1 WHERE user_id = $2",
     "describe": {
@@ -125,6 +150,38 @@
         ]
       },
       "nullable": []
+    }
+  },
+  "f8eefa985af6dc099883df9fefe6f4f6bf47a0e9dc14b4c3cb8c0c72b0038a77": {
+    "query": "SELECT users.user_id, users.level, users.current_xp\n        FROM users_guilds\n        INNER JOIN users ON users_guilds.user_id = users.user_id\n        WHERE users_guilds.guild_id = $1\n        ORDER BY users.total_xp DESC\n        LIMIT 10",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "user_id",
+          "type_info": "Int8"
+        },
+        {
+          "ordinal": 1,
+          "name": "level",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 2,
+          "name": "current_xp",
+          "type_info": "Int4"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
     }
   }
 }
