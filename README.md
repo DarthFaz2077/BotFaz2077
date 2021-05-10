@@ -9,31 +9,5 @@ Simple Bot for Discord.
 
 ## Usage
 
-1. Copy docker-compose.yml.example to docker-compose.yml and update as needed. See example below:
-
-```yaml
-version: "3"
-
-services:
-  postgres:
-    image: postgres:alpine
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: "your_db_password"
-    restart: unless-stopped
-
-  botfaz2077:
-    image: darthfaz2077/botfaz2077:latest
-    environment:
-      DISCORD_TOKEN: "your_token"
-      PREFIX: "bf!"
-      ACTIVITY: "with rust"
-      POSTGRES_URL: "postgres://postgres:your_db_password@postgres/postgres"
-      RUST_LOG: "info"
-    depends_on:
-      - postgres
-    restart: unless-stopped
-```
-
+1. Copy `docker-compose.yml` and `.env` and update as needed.
 2. Run `docker-compose up --detach`.

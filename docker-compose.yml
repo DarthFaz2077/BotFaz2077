@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "${DB_NAME}"
+      POSTGRES_USER: "${DB_USER}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD}"
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+
+  botfaz2077:
+    image: darthfaz2077/botfaz2077:latest
+    restart: unless-stopped
+    environment:
+      DISCORD_TOKEN: "${DISCORD_TOKEN}"
+      PREFIX: "${PREFIX}"
+      ACTIVITY: "${ACTIVITY}"
+      POSTGRES_URL: "postgres://${DB_USER}:${DB_PASSWORD}@postgres/${DB_NAME}"
+      RUST_LOG: "info"
+    depends_on:
+      - postgres
