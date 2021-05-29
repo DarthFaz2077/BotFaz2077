@@ -10,7 +10,6 @@ use std::{sync::Arc, time::SystemTime};
 pub struct ShardManagerContainer;
 pub struct StartTime;
 pub struct BotConfig;
-pub struct BotVersion;
 pub struct ReqwestClientContainer;
 pub struct PgPoolContainer;
 
@@ -24,10 +23,6 @@ impl TypeMapKey for StartTime {
 
 impl TypeMapKey for BotConfig {
     type Value = Config;
-}
-
-impl TypeMapKey for BotVersion {
-    type Value = String;
 }
 
 impl TypeMapKey for ReqwestClientContainer {

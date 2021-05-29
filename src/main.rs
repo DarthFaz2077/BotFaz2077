@@ -9,7 +9,7 @@ use crate::utilities::help::*;
 use reqwest::Client as ReqwestClient;
 use serenity::{framework::standard::StandardFramework, http::Http, prelude::*};
 use sqlx::{migrate, PgPool};
-use std::{collections::HashSet, fs, time::SystemTime};
+use std::{collections::HashSet, time::SystemTime};
 use tracing::{error, instrument};
 
 #[tokio::main]
@@ -20,9 +20,6 @@ async fn main() {
     let start_time = SystemTime::now();
 
     let config = envy::from_env::<Config>().unwrap();
-
-    let hash = blake3::hash(&fs::read(std::env::current_exe().unwrap()).unwrap());
-    let version_hash = hash.to_hex().to_string();
 
     let reqwest_client = ReqwestClient::new();
 
@@ -63,7 +60,6 @@ async fn main() {
         data.insert::<ShardManagerContainer>(client.shard_manager.clone());
         data.insert::<StartTime>(start_time);
         data.insert::<BotConfig>(config);
-        data.insert::<BotVersion>(version_hash);
         data.insert::<ReqwestClientContainer>(reqwest_client);
         data.insert::<PgPoolContainer>(pg_pool);
     }

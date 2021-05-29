@@ -8,10 +8,10 @@ readme = "README.md"
 repository = "https://github.com/DarthFaz2077/BotFaz2077"
 license = "MIT"
 keywords = ["bot", "discord", "docker", "serenity"]
+build = "build.rs"
 
 [dependencies]
 base64 = "0.13.0"
-blake3 = "0.3.8"
 chrono = "0.4.19"
 envy = "0.4.2"
 humantime = "2.1.0"
@@ -34,3 +34,8 @@ features = [
     "postgres",
     "runtime-tokio-rustls",
 ]
+
+[build-dependencies.vergen]
+version = "5.1.8"
+default-features = false
+features = ["git"]
