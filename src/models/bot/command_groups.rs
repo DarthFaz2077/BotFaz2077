@@ -1,4 +1,4 @@
-use crate::commands::{anime::*, economy::*, fun::*, general::*, owners::*};
+use crate::commands::{anime::*, economy::*, fun::*, general::*, owners::*, transformice::*};
 use serenity::framework::standard::macros::group;
 
 #[group]
@@ -33,3 +33,9 @@ pub struct Fun;
 #[owners_only]
 #[commands(botavatar, shutdown, uptime, version)]
 pub struct Owners;
+
+#[group]
+#[description = "Transformice stats commands."]
+#[summary = "Transformice stats commands."]
+#[commands(player)]
+pub struct Transformice;

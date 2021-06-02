@@ -45,6 +45,7 @@ async fn main() {
         .group(&ECONOMY_GROUP)
         .group(&FUN_GROUP)
         .group(&OWNERS_GROUP)
+        .group(&TRANSFORMICE_GROUP)
         .help(&HELP)
         .before(before);
 
