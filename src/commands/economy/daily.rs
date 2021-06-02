@@ -58,8 +58,7 @@ async fn daily(ctx: &Context, msg: &Message) -> CommandResult {
         msg.author.id.0 as i64
     )
     .execute(&pg_pool)
-    .await
-    .unwrap();
+    .await?;
 
     msg.channel_id
         .send_message(ctx, |m| {
