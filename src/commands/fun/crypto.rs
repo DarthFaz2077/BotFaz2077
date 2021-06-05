@@ -17,7 +17,7 @@ struct ResponseJson {
     error: String,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Default, Deserialize)]
 struct Ticker {
     base: String,
     target: String,
@@ -35,7 +35,7 @@ async fn crypto(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
             .send_message(ctx, |m| {
                 m.embed(|e| {
                     e.title("Crypto Checker");
-                    e.description("Send a pair to search for, please!");
+                    e.description("Send a pair of currencies to search for, please!");
                     e.footer(|f| {
                         f.text(format!("Requested by {}.", msg.author.tag()));
                         f.icon_url(msg.author.face());
