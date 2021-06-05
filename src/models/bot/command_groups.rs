@@ -37,5 +37,5 @@ pub struct Owners;
 #[group]
 #[description = "Transformice stats commands."]
 #[summary = "Transformice stats commands."]
-#[commands(player)]
+#[commands(player, tribe)]
 pub struct Transformice;
