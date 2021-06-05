@@ -7,35 +7,36 @@ use serenity::{
     framework::standard::{macros::command, Args, CommandResult},
     model::channel::Message,
 };
+use std::collections::HashMap;
 use urlencoding::encode;
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct ResponseJson {
     //id: i64,
     name: String,
-    //title: String,
+    title: String,
     //badges: Vec<String>,
     //titles: Vec<String>,
-    tribe: Tribe,
-    //soulmate: Soulmate,
+    tribe: Option<Tribe>,
+    soulmate: Option<Soulmate>,
     //shop: Shop,
     stats: Stats,
     position: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Tribe {
     //id: i64,
     name: String,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Soulmate {
     //id: i64,
-//name: String,
+    name: String,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Shop {
     //look: String,
 //outfits: Vec<String>,
@@ -43,7 +44,7 @@ struct Shop {
 //shaman_color: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Stats {
     shaman: Shaman,
     normal: Normal,
@@ -53,7 +54,7 @@ struct Stats {
     //score: Score,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Shaman {
     //experience: i64,
     //cheese: i64,
@@ -62,7 +63,7 @@ struct Shaman {
     saves_divine: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Normal {
     //rounds: i64,
     cheese: i64,
@@ -70,7 +71,7 @@ struct Normal {
     bootcamp: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Survivor {
     //rounds: i64,
 //killed: i64,
@@ -78,7 +79,7 @@ struct Survivor {
 //survivor: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Racing {
     //rounds: i64,
 //finished: i64,
@@ -86,14 +87,14 @@ struct Racing {
 //podium: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Defilante {
     //rounds: i64,
 //finished: i64,
 //points: i64,
 }
 
-#[derive(Default, Deserialize)]
+#[derive(Deserialize)]
 struct Score {
     //stats: i64,
 //shaman: i64,
@@ -163,12 +164,28 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
     let response_json = response.json::<ResponseJson>().await?;
 
+    let title_number = format!("T_{}", response_json.title);
+    let request_url = Url::parse_with_params(
+        "https://cheese.formice.com/api/translation/en?",
+        &[("field", title_number.clone())],
+    )?;
+    let response = reqwest_client.get(request_url).send().await?;
+    let response_hashmap: HashMap<String, String> = serde_json::from_str(&response.text().await?)?;
+
     msg.channel_id
         .send_message(ctx, |m| {
             m.embed(|e| {
                 e.title("Transformice Player Stats");
                 e.description(&response_json.name);
-                e.field("Tribe:", &response_json.tribe.name, false);
+                e.field("Title:", response_hashmap.get(&title_number).unwrap(), true);
+                match response_json.soulmate {
+                    Some(soulmate) => e.field("Soulmate:", soulmate.name, true),
+                    None => e.field("Soulmate:", "No soulmate", false),
+                };
+                match response_json.tribe {
+                    Some(tribe) => e.field("Tribe:", tribe.name, true),
+                    None => e.field("Tribe:", "No tribe", true),
+                };
                 e.field(
                     "Normal Saves:",
                     &response_json.stats.shaman.saves_normal,
