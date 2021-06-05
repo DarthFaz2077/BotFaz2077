@@ -44,6 +44,19 @@
       "nullable": []
     }
   },
+  "2be85e04d554fbd02d871ebd0ada4db74832eb10b37ed3d8249b821211d9ca87": {
+    "query": "UPDATE users SET coins = coins - $1 WHERE user_id = $2",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
   "3e22a2ccb94a462f61fa12f462c908fb47a7ffa5cf5c4be92de15e97e2d8c985": {
     "query": "SELECT next_daily FROM users WHERE user_id = $1",
     "describe": {
@@ -66,6 +79,39 @@
   },
   "493483d7dfa7a22ff8ee3f47f5c27eb180d7d51833c7909bd610ef34bc278df9": {
     "query": "INSERT INTO users_guilds (user_id, guild_id) VALUES ($1, $2) ON CONFLICT DO NOTHING",
+    "describe": {
+      "columns": [],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Int8"
+        ]
+      },
+      "nullable": []
+    }
+  },
+  "6723d4c64c2ac30a3674162b1b2617073913dd775c3c6ed1074e07db55931bd3": {
+    "query": "SELECT coins FROM users WHERE user_id = $1",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "coins",
+          "type_info": "Int8"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "Int8"
+        ]
+      },
+      "nullable": [
+        false
+      ]
+    }
+  },
+  "6777619ef97ed2e6b6f62e225bf7c4988401aea295475bf5849710e448a0ec97": {
+    "query": "UPDATE users SET coins = coins + $1 WHERE user_id = $2",
     "describe": {
       "columns": [],
       "parameters": {

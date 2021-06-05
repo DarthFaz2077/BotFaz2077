@@ -18,7 +18,7 @@ pub struct Anime;
 #[group]
 #[description = "Economy commands."]
 #[summary = "Economy commands."]
-#[commands(daily)]
+#[commands(daily, gamble)]
 pub struct Economy;
 
 #[group]
