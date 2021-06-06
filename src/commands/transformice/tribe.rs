@@ -28,9 +28,9 @@ struct Members {
 struct Stats {
     shaman: Shaman,
     normal: Normal,
-    //survivor: Survivor,
-    //racing: Racing,
-    //defilante: Defilante,
+    survivor: Survivor,
+    racing: Racing,
+    defilante: Defilante,
     //score: Score,
 }
 
@@ -52,25 +52,25 @@ struct Normal {
 
 #[derive(Deserialize)]
 struct Survivor {
-    //rounds: i64,
-//killed: i64,
-//shaman: i64,
-//survivor: i64,
+    rounds: i64,
+    killed: i64,
+    shaman: i64,
+    survivor: i64,
 }
 
 #[derive(Deserialize)]
 struct Racing {
-    //rounds: i64,
-//finished: i64,
-//first: i64,
-//podium: i64,
+    rounds: i64,
+    finished: i64,
+    first: i64,
+    podium: i64,
 }
 
 #[derive(Deserialize)]
 struct Defilante {
-    //rounds: i64,
-//finished: i64,
-//points: i64,
+    rounds: i64,
+    finished: i64,
+    points: i64,
 }
 
 #[derive(Deserialize)]
@@ -148,34 +148,101 @@ async fn tribe(ctx: &Context, msg: &Message, args: Args) -> CommandResult {
             m.embed(|e| {
                 e.title("Transformice Tribe Stats");
                 e.description(&response_json.name);
-                e.field("Total members:", &response_json.members.total, false);
-                e.field("Active members:", &response_json.members.active, false);
                 e.field(
-                    "Normal saves:",
+                    "[Members] Total members:",
+                    &response_json.members.total,
+                    false,
+                );
+                e.field(
+                    "[Members] Active members:",
+                    &response_json.members.active,
+                    false,
+                );
+                e.field(
+                    "[Shaman] Normal saves:",
                     &response_json.stats.shaman.saves_normal,
                     false,
                 );
                 e.field(
-                    "Hardmode Saves:",
+                    "[Shaman] Hardmode Saves:",
                     &response_json.stats.shaman.saves_hard,
                     false,
                 );
                 e.field(
-                    "Divine Saves:",
+                    "[Shaman] Divine Saves:",
                     &response_json.stats.shaman.saves_divine,
                     false,
                 );
                 e.field(
-                    "Cheese gathered first:",
+                    "[Mouse] Cheese gathered first:",
                     &response_json.stats.normal.first,
                     false,
                 );
                 e.field(
-                    "Gathered cheese:",
+                    "[Mouse] Gathered cheese:",
                     &response_json.stats.normal.cheese,
                     false,
                 );
-                e.field("Bootcamp:", &response_json.stats.normal.bootcamp, false);
+                e.field(
+                    "[Mouse] Bootcamp:",
+                    &response_json.stats.normal.bootcamp,
+                    false,
+                );
+                e.field(
+                    "[Racing] Rounds played:",
+                    &response_json.stats.racing.rounds,
+                    false,
+                );
+                e.field(
+                    "[Racing] Completed rounds:",
+                    &response_json.stats.racing.finished,
+                    false,
+                );
+                e.field(
+                    "[Racing] Number of podiums:",
+                    &response_json.stats.racing.podium,
+                    false,
+                );
+                e.field(
+                    "[Racing] Number of firsts:",
+                    &response_json.stats.racing.first,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Rounds played:",
+                    &response_json.stats.survivor.rounds,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Number of times Shaman:",
+                    &response_json.stats.survivor.shaman,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Killed mice:",
+                    &response_json.stats.survivor.killed,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Rounds survived:",
+                    &response_json.stats.survivor.survivor,
+                    false,
+                );
+                e.field(
+                    "[Défilante] Rounds played:",
+                    &response_json.stats.defilante.rounds,
+                    false,
+                );
+                e.field(
+                    "[Défilante] Completed rounds:",
+                    &response_json.stats.defilante.finished,
+                    false,
+                );
+                e.field(
+                    "[Défilante] Points gathered:",
+                    &response_json.stats.defilante.points,
+                    false,
+                );
                 e.field("Position:", &response_json.position, false);
                 e.footer(|f| {
                     f.text(format!("Requested by {}.", msg.author.tag()));

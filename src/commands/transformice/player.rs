@@ -6,6 +6,7 @@ use serenity::{
     client::Context,
     framework::standard::{macros::command, Args, CommandResult},
     model::channel::Message,
+    utils::Colour,
 };
 use std::collections::HashMap;
 use urlencoding::encode;
@@ -48,9 +49,9 @@ struct Shop {
 struct Stats {
     shaman: Shaman,
     normal: Normal,
-    //survivor: Survivor,
-    //racing: Racing,
-    //defilante: Defilante,
+    survivor: Survivor,
+    racing: Racing,
+    defilante: Defilante,
     //score: Score,
 }
 
@@ -73,25 +74,25 @@ struct Normal {
 
 #[derive(Deserialize)]
 struct Survivor {
-    //rounds: i64,
-//killed: i64,
-//shaman: i64,
-//survivor: i64,
+    rounds: i64,
+    killed: i64,
+    shaman: i64,
+    survivor: i64,
 }
 
 #[derive(Deserialize)]
 struct Racing {
-    //rounds: i64,
-//finished: i64,
-//first: i64,
-//podium: i64,
+    rounds: i64,
+    finished: i64,
+    first: i64,
+    podium: i64,
 }
 
 #[derive(Deserialize)]
 struct Defilante {
-    //rounds: i64,
-//finished: i64,
-//points: i64,
+    rounds: i64,
+    finished: i64,
+    points: i64,
 }
 
 #[derive(Deserialize)]
@@ -177,41 +178,105 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
             m.embed(|e| {
                 e.title("Transformice Player Stats");
                 e.description(&response_json.name);
-                e.field("Title:", response_hashmap.get(&title_number).unwrap(), true);
+                e.field(
+                    "Title:",
+                    response_hashmap.get(&title_number).unwrap(),
+                    false,
+                );
                 match response_json.soulmate {
-                    Some(soulmate) => e.field("Soulmate:", soulmate.name, true),
+                    Some(soulmate) => e.field("Soulmate:", soulmate.name, false),
                     None => e.field("Soulmate:", "No soulmate", false),
                 };
                 match response_json.tribe {
-                    Some(tribe) => e.field("Tribe:", tribe.name, true),
-                    None => e.field("Tribe:", "No tribe", true),
+                    Some(tribe) => e.field("Tribe:", tribe.name, false),
+                    None => e.field("Tribe:", "No tribe", false),
                 };
                 e.field(
-                    "Normal Saves:",
+                    "[Shaman] Normal Saves:",
                     &response_json.stats.shaman.saves_normal,
                     false,
                 );
                 e.field(
-                    "Hardmode Saves:",
+                    "[Shaman] Hardmode Saves:",
                     &response_json.stats.shaman.saves_hard,
                     false,
                 );
                 e.field(
-                    "Divine Saves:",
+                    "[Shaman] Divine Saves:",
                     &response_json.stats.shaman.saves_divine,
                     false,
                 );
+                e.colour(Colour::from_rgb(170, 69, 253));
                 e.field(
-                    "Cheese gathered first:",
+                    "[Mouse] Cheese gathered first:",
                     &response_json.stats.normal.first,
                     false,
                 );
                 e.field(
-                    "Gathered cheese:",
+                    "[Mouse] Gathered cheese:",
                     &response_json.stats.normal.cheese,
                     false,
                 );
-                e.field("Bootcamp:", &response_json.stats.normal.bootcamp, false);
+                e.field(
+                    "[Mouse] Bootcamp:",
+                    &response_json.stats.normal.bootcamp,
+                    false,
+                );
+                e.field(
+                    "[Racing] Rounds played:",
+                    &response_json.stats.racing.rounds,
+                    false,
+                );
+                e.field(
+                    "[Racing] Completed rounds:",
+                    &response_json.stats.racing.finished,
+                    false,
+                );
+                e.field(
+                    "[Racing] Number of podiums:",
+                    &response_json.stats.racing.podium,
+                    false,
+                );
+                e.field(
+                    "[Racing] Number of firsts:",
+                    &response_json.stats.racing.first,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Rounds played:",
+                    &response_json.stats.survivor.rounds,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Number of times Shaman:",
+                    &response_json.stats.survivor.shaman,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Killed mice:",
+                    &response_json.stats.survivor.killed,
+                    false,
+                );
+                e.field(
+                    "[Survivor] Rounds survived:",
+                    &response_json.stats.survivor.survivor,
+                    false,
+                );
+                e.field(
+                    "[Défilante] Rounds played:",
+                    &response_json.stats.defilante.rounds,
+                    false,
+                );
+                e.field(
+                    "[Défilante] Completed rounds:",
+                    &response_json.stats.defilante.finished,
+                    false,
+                );
+                e.field(
+                    "[Défilante] Points gathered:",
+                    &response_json.stats.defilante.points,
+                    false,
+                );
                 e.field("Position:", &response_json.position, false);
                 e.footer(|f| {
                     f.text(format!("Requested by {}.", msg.author.tag()));
