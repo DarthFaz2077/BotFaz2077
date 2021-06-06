@@ -1,5 +1,6 @@
 use crate::models::bot::data::PgPoolContainer;
 use chrono::Utc;
+use rand::random;
 use serenity::{
     client::Context,
     framework::standard::{macros::command, Args, CommandResult},
@@ -84,7 +85,7 @@ async fn gamble(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
         return Ok(());
     }
 
-    if rand::random() {
+    if random() {
         query!(
             "UPDATE users SET coins = coins + $1 WHERE user_id = $2",
             amount,
