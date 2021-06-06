@@ -49,8 +49,8 @@ struct Shop {
 struct Stats {
     shaman: Shaman,
     normal: Normal,
-    survivor: Survivor,
     racing: Racing,
+    survivor: Survivor,
     defilante: Defilante,
     //score: Score,
 }
@@ -73,19 +73,19 @@ struct Normal {
 }
 
 #[derive(Deserialize)]
-struct Survivor {
-    rounds: i64,
-    killed: i64,
-    shaman: i64,
-    survivor: i64,
-}
-
-#[derive(Deserialize)]
 struct Racing {
     rounds: i64,
     finished: i64,
     first: i64,
     podium: i64,
+}
+
+#[derive(Deserialize)]
+struct Survivor {
+    rounds: i64,
+    killed: i64,
+    shaman: i64,
+    survivor: i64,
 }
 
 #[derive(Deserialize)]
@@ -99,8 +99,8 @@ struct Defilante {
 struct Score {
     //stats: i64,
 //shaman: i64,
-//survivor: i64,
 //racing: i64,
+//survivor: i64,
 //defilante: i64,
 //overall: i64,
 }
