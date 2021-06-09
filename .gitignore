@@ -1,6 +1,7 @@
-# local configuration
-.env.local
-docker-compose.local.yml
+# dev files
+.env.dev
+docker-compose.dev.yml
+start.bat
 
 # Created by https://www.toptal.com/developers/gitignore/api/rust,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=rust,visualstudiocode
