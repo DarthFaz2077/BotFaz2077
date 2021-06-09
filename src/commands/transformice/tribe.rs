@@ -11,7 +11,6 @@ use urlencoding::encode;
 
 #[derive(Deserialize)]
 struct ResponseJson {
-    //id: i64,
     name: String,
     members: Members,
     stats: Stats,
@@ -31,12 +30,10 @@ struct Stats {
     racing: Racing,
     survivor: Survivor,
     defilante: Defilante,
-    //score: Score,
 }
 
 #[derive(Deserialize)]
 struct Shaman {
-    //cheese: i64,
     saves_normal: i64,
     saves_hard: i64,
     saves_divine: i64,
@@ -44,7 +41,6 @@ struct Shaman {
 
 #[derive(Deserialize)]
 struct Normal {
-    //rounds: i64,
     cheese: i64,
     first: i64,
     bootcamp: i64,
@@ -71,16 +67,6 @@ struct Defilante {
     rounds: i64,
     finished: i64,
     points: i64,
-}
-
-#[derive(Deserialize)]
-struct Score {
-    //stats: i64,
-//shaman: i64,
-//racing: i64,
-//survivor: i64,
-//defilante: i64,
-//overall: i64,
 }
 
 #[command]
