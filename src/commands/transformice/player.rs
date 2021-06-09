@@ -1,15 +1,17 @@
 use crate::models::bot::data::ReqwestClientContainer;
 use chrono::Utc;
 use reqwest::Url;
+use resvg::render;
 use serde::Deserialize;
 use serenity::{
     client::Context,
     framework::standard::{macros::command, Args, CommandResult},
     model::channel::Message,
-    utils::Colour,
 };
-use std::collections::HashMap;
+use std::{collections::HashMap, u8};
+use tiny_skia::Pixmap;
 use urlencoding::encode;
+use usvg::{Options, Tree};
 
 #[derive(Deserialize)]
 struct ResponseJson {
@@ -17,7 +19,7 @@ struct ResponseJson {
     title: String,
     tribe: Option<Tribe>,
     soulmate: Option<Soulmate>,
-    //shop: Shop,
+    shop: Shop,
     stats: Stats,
     position: i64,
 }
@@ -34,10 +36,8 @@ struct Soulmate {
 
 #[derive(Deserialize)]
 struct Shop {
-    //look: String,
-//outfits: Vec<String>,
-//mouse_color: i64,
-//shaman_color: i64,
+    look: String,
+    mouse_color: i64,
 }
 
 #[derive(Deserialize)]
@@ -154,8 +154,27 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let response = reqwest_client.get(request_url).send().await?;
     let response_hashmap: HashMap<String, String> = serde_json::from_str(&response.text().await?)?;
 
+    let request_url = Url::parse(&format!(
+        "https://cheese.formice.com/api/dressroom/mouse/{};{:X}",
+        response_json.shop.look, response_json.shop.mouse_color
+    ))?;
+    let response = reqwest_client.get(request_url).send().await?;
+    let response_svg = response.text().await?;
+
+    let mut pixmap: Pixmap;
+
+    {
+        let opt = Options::default();
+        let rtree = Tree::from_str(&response_svg, &opt).unwrap();
+        pixmap = Pixmap::new(512, 512).unwrap();
+        render(&rtree, usvg::FitTo::Height(512), pixmap.as_mut()).unwrap();
+    }
+
+    let outfit = pixmap.encode_png().unwrap();
+
     msg.channel_id
         .send_message(ctx, |m| {
+            m.add_file((outfit.as_slice(), "outfit.png"));
             m.embed(|e| {
                 e.title("Transformice Player Stats");
                 e.description(&response_json.name);
@@ -187,7 +206,6 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                     &response_json.stats.shaman.saves_divine,
                     false,
                 );
-                e.colour(Colour::from_rgb(170, 69, 253));
                 e.field(
                     "[Mouse] Cheese gathered first:",
                     &response_json.stats.normal.first,
@@ -259,6 +277,7 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                     false,
                 );
                 e.field("Position:", &response_json.position, false);
+                e.image("attachment://outfit.png");
                 e.footer(|f| {
                     f.text(format!("Requested by {}.", msg.author.tag()));
                     f.icon_url(msg.author.face());
