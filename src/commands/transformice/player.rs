@@ -15,6 +15,7 @@ use usvg::{Options, Tree};
 
 #[derive(Deserialize)]
 struct ResponseJson {
+    id: i64,
     name: String,
     title: String,
     tribe: Option<Tribe>,
@@ -173,6 +174,10 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
     let outfit = pixmap.encode_png().unwrap();
 
+    let full_id = response_json.id.to_string();
+    let len = full_id.len();
+    let partial_id = &full_id[len - 4..];
+
     msg.channel_id
         .send_message(ctx, |m| {
             m.add_file((outfit.as_slice(), "outfit.png"));
@@ -262,6 +267,10 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
                     ),
                     false,
                 );
+                e.thumbnail(format!(
+                    "https://avatars.atelier801.com/{}/{}.jpg",
+                    partial_id, full_id
+                ));
                 e.image("attachment://outfit.png");
                 e.footer(|f| {
                     f.text(format!("Requested by {}.", msg.author.tag()));
