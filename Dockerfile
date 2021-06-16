@@ -20,7 +20,7 @@ COPY --from=cacher /botfaz2077/target target
 COPY --from=cacher $CARGO_HOME $CARGO_HOME
 RUN cargo build --release --bin botfaz2077
 
-FROM alpine:3.13.5 as runtime
+FROM alpine:3.14.0 as runtime
 RUN apk add --no-cache libgcc
 COPY --from=builder /botfaz2077/target/release/botfaz2077 /usr/local/bin
 CMD ["botfaz2077"]
