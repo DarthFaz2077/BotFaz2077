@@ -42,6 +42,6 @@ features = [
 ]
 
 [build-dependencies.vergen]
-version = "5.1.11"
+version = "5.1.12"
 default-features = false
 features = ["git"]
