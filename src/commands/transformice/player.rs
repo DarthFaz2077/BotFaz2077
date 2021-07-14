@@ -118,7 +118,7 @@ async fn player(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
 
     let data = ctx.data.read().await;
     let reqwest_client = data.get::<ReqwestClientContainer>().cloned().unwrap();
-    let name = encode(&args.single::<String>().unwrap());
+    let name = encode(&args.single::<String>().unwrap()).into_owned();
     let request_url = Url::parse(&format!("https://cheese.formice.com/api/players/{}", name))?;
     let response = reqwest_client.get(request_url).send().await?;
 
